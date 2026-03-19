@@ -711,45 +711,33 @@ export default function Settings() {
             <Download className="w-4 h-4 text-primary" />
             <h2 className="text-sm font-bold font-display">{t("settingsExport")}</h2>
           </div>
-          <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-2">
             <button
               onClick={handleExportJSON}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-background border border-border hover:bg-accent transition-colors"
+              className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-background border border-border hover:bg-accent transition-colors active:scale-95"
             >
-              <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
                 <FileJson className="w-4 h-4 text-primary" />
-                <div className="text-left">
-                  <span className="text-sm font-body block">{t("settingsExportJSON")}</span>
-                  <span className="text-[10px] text-muted-foreground">{t("settingsExportJSONDesc")}</span>
-                </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs font-semibold font-body">Export JSON</span>
             </button>
             <button
               onClick={handleExportCSV}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-background border border-border hover:bg-accent transition-colors"
+              className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-background border border-border hover:bg-accent transition-colors active:scale-95"
             >
-              <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-emerald-500/10 flex items-center justify-center">
                 <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-                <div className="text-left">
-                  <span className="text-sm font-body block">{t("settingsExportCSV")}</span>
-                  <span className="text-[10px] text-muted-foreground">{t("settingsExportCSVDesc")}</span>
-                </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs font-semibold font-body">Export CSV</span>
             </button>
             <button
               onClick={() => fileRef.current?.click()}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-background border border-border hover:bg-accent transition-colors"
+              className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-background border border-border hover:bg-accent transition-colors active:scale-95"
             >
-              <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
                 <Upload className="w-4 h-4 text-primary" />
-                <div className="text-left">
-                  <span className="text-sm font-body block">{t("settingsImportJSON")}</span>
-                  <span className="text-[10px] text-muted-foreground">{t("settingsImportJSONDesc")}</span>
-                </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs font-semibold font-body">Import JSON</span>
             </button>
             <input
               ref={fileRef}
@@ -760,16 +748,12 @@ export default function Settings() {
             />
             <button
               onClick={() => csvFileRef.current?.click()}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-background border border-border hover:bg-accent transition-colors"
+              className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-background border border-border hover:bg-accent transition-colors active:scale-95"
             >
-              <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-emerald-500/10 flex items-center justify-center">
                 <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-                <div className="text-left">
-                  <span className="text-sm font-body block">Import CSV</span>
-                  <span className="text-[10px] text-muted-foreground">Import transactions from CSV file</span>
-                </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs font-semibold font-body">Import CSV</span>
             </button>
             <input
               ref={csvFileRef}

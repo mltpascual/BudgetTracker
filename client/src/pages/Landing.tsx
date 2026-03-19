@@ -15,6 +15,9 @@ import {
   BarChart3,
   CalendarDays,
   Settings,
+  Inbox,
+  Sparkles,
+  FolderCog,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 
@@ -32,6 +35,9 @@ const M = {
   goals: "/assets/mockups/mockup-goals.png",
   history: "/assets/mockups/mockup-history.png",
   settings: "/assets/mockups/mockup-settings.png",
+  emptyState: "/assets/mockups/mockup-empty-state.png",
+  onboarding: "/assets/mockups/mockup-onboarding.png",
+  categories: "/assets/mockups/mockup-categories.png",
 };
 
 /* ── Animation helpers ── */
@@ -121,8 +127,34 @@ function FeatureSection({
 export default function Landing() {
   const { t, lang } = useLanguage();
 
-  /* Feature sections data — 6 key features only */
+  /* Feature sections data — 9 app screens */
   const FEATURES = [
+    {
+      icon: Sparkles,
+      label: lang === "fil" ? "Welcome Onboarding" : "Welcome Onboarding",
+      heading:
+        lang === "fil"
+          ? "Magsimula nang madali at mabilis."
+          : "Get started quickly and easily.",
+      description:
+        lang === "fil"
+          ? "Ang kuripot kalabaw buddy mo ang mag-ga-guide sa'yo. Walang account needed — lahat ng data mo naka-save sa device mo lang."
+          : "Your kuripot kalabaw buddy will guide you through. No account needed — all your data stays on your device.",
+      mockup: M.onboarding,
+    },
+    {
+      icon: Inbox,
+      label: lang === "fil" ? "Fresh Start" : "Fresh Start",
+      heading:
+        lang === "fil"
+          ? "Malinis na dashboard, handa ka nang mag-budget."
+          : "A clean dashboard, ready for your first budget.",
+      description:
+        lang === "fil"
+          ? "Pag bago ka pa lang, makikita mo ang empty state na may tips at quick setup para makapagsimula agad."
+          : "When you're just starting out, you'll see a clean slate with tips and quick setup to get going right away.",
+      mockup: M.emptyState,
+    },
     {
       icon: LayoutGrid,
       label: lang === "fil" ? "Smart Dashboard" : "Smart Dashboard",
@@ -200,6 +232,19 @@ export default function Landing() {
           ? "Language, currency, themes, custom categories, export/backup — ikaw ang boss ng app mo. Data mo, control mo."
           : "Language, currency, themes, custom categories, export/backup — you're the boss of your app. Your data, your control.",
       mockup: M.settings,
+    },
+    {
+      icon: FolderCog,
+      label: lang === "fil" ? "Categories & Backup" : "Categories & Backup",
+      heading:
+        lang === "fil"
+          ? "I-organize ang categories at i-backup ang data mo."
+          : "Organize categories and back up your data.",
+      description:
+        lang === "fil"
+          ? "Custom categories para sa expenses at income, plus JSON/CSV import at export para safe ang data mo kahit mag-palit ka ng phone."
+          : "Custom categories for expenses and income, plus JSON/CSV import and export so your data is safe even when switching phones.",
+      mockup: M.categories,
     },
   ];
 
@@ -343,7 +388,7 @@ export default function Landing() {
       </section>
 
       {/* ══════════════════════════════════════════════════════
-          FEATURES — 6 key features with generated mockups
+          FEATURES — 9 app screens with generated mockups
           ══════════════════════════════════════════════════════ */}
       <section id="features" className="pt-16 md:pt-20">
         <div className="max-w-6xl mx-auto px-5">

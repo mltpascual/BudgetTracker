@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { defineConfig, type Plugin, type ViteDevServer } from "vite";
 import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
+import { VitePWA } from "vite-plugin-pwa";
 
 // =============================================================================
 // Manus Debug Collector - Vite Plugin
@@ -150,7 +151,86 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
+const plugins = [
+  react(),
+  tailwindcss(),
+  jsxLocPlugin(),
+  vitePluginManusRuntime(),
+  vitePluginManusDebugCollector(),
+  VitePWA({
+    registerType: 'autoUpdate',
+    includeAssets: ['favicon.ico'],
+    manifest: {
+      name: 'Tipid',
+      short_name: 'Tipid',
+      description: 'Budgeting without the stress. Your friendly kalabaw budget buddy.',
+      start_url: '/app',
+      display: 'standalone',
+      background_color: '#e8f5f3',
+      theme_color: '#0d9488',
+      orientation: 'portrait',
+      icons: [
+        {
+          src: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/tipid-icon-192x192_c3fb4771.png',
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: 'any maskable',
+        },
+        {
+          src: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/tipid-icon-512x512_4db30610.png',
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'any maskable',
+        },
+      ],
+    },
+    workbox: {
+      // Precache all build assets
+      globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+      // Runtime caching for CDN images
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/d2xsxph8kpxj0f\.cloudfront\.net\/.*/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'cdn-images',
+            expiration: {
+              maxEntries: 50,
+              maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+            },
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
+          },
+        },
+        {
+          urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+          handler: 'StaleWhileRevalidate',
+          options: {
+            cacheName: 'google-fonts-stylesheets',
+          },
+        },
+        {
+          urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'google-fonts-webfonts',
+            expiration: {
+              maxEntries: 20,
+              maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+            },
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
+          },
+        },
+      ],
+      // Handle SPA navigation
+      navigateFallback: 'index.html',
+      navigateFallbackDenylist: [/^\/api/],
+    },
+  }),
+];
 
 export default defineConfig({
   plugins,

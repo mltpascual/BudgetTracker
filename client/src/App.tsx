@@ -5,6 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import AppLayout from "./components/AppLayout";
+import InstallPrompt from "./components/InstallPrompt";
 import { useTipidStore } from "@/lib/store";
 
 /* ── Lazy-loaded pages ── */
@@ -82,6 +83,7 @@ function App() {
         <TooltipProvider>
           <Toaster position="top-center" />
           <Router />
+          <InstallPrompt />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

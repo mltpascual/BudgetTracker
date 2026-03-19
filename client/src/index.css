@@ -6,7 +6,7 @@
 /*
  * TIPID DESIGN SYSTEM
  * Aesthetic: "Sawali Weave" — Filipino Craft Minimalism
- * Fonts: Nunito (display), DM Sans (body)
+ * Font: Nunito (unified across all elements)
  * 6 Color Themes: Green, Ocean Blue, Terracotta, Lavender, Teal, Charcoal+Gold
  */
 
@@ -48,7 +48,8 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-display: "Nunito", system-ui, sans-serif;
-  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, sans-serif;
+  --font-sans: "Nunito", system-ui, sans-serif;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

@@ -171,13 +171,13 @@ const plugins = [
       orientation: 'portrait',
       icons: [
         {
-          src: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/tipid-icon-192x192_c3fb4771.png',
+          src: '/tipid-icon-192x192.png',
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any maskable',
         },
         {
-          src: 'https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/tipid-icon-512x512_4db30610.png',
+          src: '/tipid-icon-512x512.png',
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any maskable',

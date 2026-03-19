@@ -233,12 +233,12 @@ export default function Analytics() {
               <p className="text-[10px] text-muted-foreground font-body">
                 Top Category
               </p>
-              <p className="text-base font-bold font-body mt-0.5">
+              <div className="text-base font-bold font-body mt-0.5">
                 <span className="inline-flex items-center gap-1">
                   <CategoryIcon categoryId={topCategory.catId} iconName={topCategory.icon} color={topCategory.color} size="sm" />
                   {topCategory.name}
                 </span>
-              </p>
+              </div>
             </div>
           )}
         </div>

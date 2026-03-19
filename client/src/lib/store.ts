@@ -5,6 +5,7 @@
  */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { generateMockData as _generateMockData } from "./mockData";
 
 // ─── Types ───────────────────────────────────────────────────────────
 export type TransactionType = "expense" | "income";
@@ -215,6 +216,11 @@ interface TipidStore {
   exportData: () => string;
   importData: (json: string) => boolean;
   resetAll: () => void;
+
+  // Mock Data
+  loadMockData: () => void;
+  clearMockData: () => void;
+  hasMockData: () => boolean;
 }
 
 // ─── Store ───────────────────────────────────────────────────────────
@@ -494,6 +500,40 @@ export const useTipidStore = create<TipidStore>()(
           templates: [],
           settings: DEFAULT_SETTINGS,
         });
+      },
+
+      // ── Mock Data ──
+      loadMockData: () => {
+        // Dynamic import workaround — we import at top of file instead
+        const currency = get().settings.currency;
+        const mock = _generateMockData(currency);
+        console.log("[Tipid-Storage] Loading mock data");
+        set({
+          transactions: mock.transactions,
+          accounts: mock.accounts,
+          budgets: mock.budgets,
+          goals: mock.goals,
+          debts: mock.debts,
+          recurringEntries: mock.recurringEntries,
+          transfers: mock.transfers,
+          templates: mock.templates,
+        });
+      },
+      clearMockData: () => {
+        console.log("[Tipid-Storage] Clearing mock data");
+        set({
+          transactions: [],
+          accounts: DEFAULT_ACCOUNTS,
+          budgets: [],
+          goals: [],
+          debts: [],
+          recurringEntries: [],
+          transfers: [],
+          templates: [],
+        });
+      },
+      hasMockData: () => {
+        return get().accounts.some((a) => a.id.startsWith("mock-"));
       },
     }),
     {

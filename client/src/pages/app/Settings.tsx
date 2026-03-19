@@ -6,7 +6,7 @@
 import { useState, useRef } from "react";
 import { useTipidStore, CURRENCY_SYMBOLS, type Category } from "@/lib/store";
 import CategoryIcon, { AVAILABLE_ICONS, ICON_NAME_MAP } from "@/components/CategoryIcon";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme, COLOR_THEMES, type ColorTheme } from "@/contexts/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User,
@@ -29,6 +29,8 @@ import {
   BookOpen,
   Bell,
   BellOff,
+  Paintbrush,
+  Database,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -55,11 +57,13 @@ export default function Settings() {
     settings, updateSettings, exportData, importData, resetAll,
     transactions, categories, accounts,
     addCategory, updateCategory, deleteCategory,
+    loadMockData, clearMockData, hasMockData,
   } = useTipidStore();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, colorTheme, setColorTheme } = useTheme();
   const fileRef = useRef<HTMLInputElement>(null);
   const [showReset, setShowReset] = useState(false);
   const [name, setName] = useState(settings.name);
+  const [mockLoaded, setMockLoaded] = useState(() => hasMockData());
 
   // Category management state
   const [showCatForm, setShowCatForm] = useState(false);
@@ -347,6 +351,86 @@ export default function Settings() {
                 <span className="text-xs font-body font-medium">{t.label}</span>
               </button>
             ))}
+          </div>
+        </motion.div>
+
+        {/* ─── Color Theme ─── */}
+        <motion.div
+          className="bg-card rounded-2xl p-4 border border-border/50"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.105 }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Paintbrush className="w-4 h-4 text-primary" />
+            <h2 className="text-sm font-bold font-display">{lang === "fil" ? "Kulay ng Tema" : "Color Theme"}</h2>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {COLOR_THEMES.map((ct) => (
+              <button
+                key={ct.id}
+                onClick={() => {
+                  setColorTheme(ct.id);
+                  toast.success(lang === "fil" ? `Tema: ${ct.nameFil}` : `Theme: ${ct.name}`);
+                }}
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all active:scale-95 ${
+                  colorTheme === ct.id
+                    ? "bg-primary/15 border-2 border-primary"
+                    : "bg-background border border-border"
+                }`}
+              >
+                <div
+                  className="w-6 h-6 rounded-full border-2 border-white shadow-sm"
+                  style={{ backgroundColor: ct.preview }}
+                />
+                <span className="text-[10px] font-body font-medium leading-tight text-center">
+                  {lang === "fil" ? ct.nameFil : ct.name}
+                </span>
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ─── Mock Data Toggle ─── */}
+        <motion.div
+          className="bg-card rounded-2xl p-4 border border-border/50"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.107 }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Database className="w-4 h-4 text-primary" />
+            <h2 className="text-sm font-bold font-display">{lang === "fil" ? "Demo Data" : "Demo Data"}</h2>
+          </div>
+          <p className="text-xs text-muted-foreground font-body mb-3">
+            {lang === "fil"
+              ? "Mag-load ng sample data para ma-test ang lahat ng features ng app."
+              : "Load sample data to test and explore all app features."}
+          </p>
+          <div className="flex gap-2">
+            {!mockLoaded ? (
+              <button
+                onClick={() => {
+                  loadMockData();
+                  setMockLoaded(true);
+                  toast.success(lang === "fil" ? "Na-load na ang demo data!" : "Demo data loaded!");
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-bold font-body active:scale-95 transition-transform"
+              >
+                {lang === "fil" ? "I-load ang Demo Data" : "Load Demo Data"}
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  clearMockData();
+                  setMockLoaded(false);
+                  toast.success(lang === "fil" ? "Na-clear na ang demo data!" : "Demo data cleared!");
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-destructive/10 text-destructive text-sm font-bold font-body active:scale-95 transition-transform"
+              >
+                {lang === "fil" ? "I-clear ang Demo Data" : "Clear Demo Data"}
+              </button>
+            )}
           </div>
         </motion.div>
 

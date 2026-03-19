@@ -111,7 +111,7 @@ export default function Goals() {
 
                 <div className="flex items-end justify-between mb-2">
                   <p className="text-xs text-muted-foreground font-body">
-                    {formatCurrency(g.currentAmount, g.currency)} / {formatCurrency(g.targetAmount, g.currency)}
+                    {formatCurrency(g.currentAmount, settings.currency)} / {formatCurrency(g.targetAmount, settings.currency)}
                   </p>
                   <p className="text-xs font-bold font-body text-primary">{pct.toFixed(0)}%</p>
                 </div>

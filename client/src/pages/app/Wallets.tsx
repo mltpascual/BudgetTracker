@@ -123,7 +123,7 @@ export default function Wallets() {
             </div>
             <div className="text-right">
               <p className="text-sm font-bold tabular-nums font-body">
-                {formatCurrency(acc.balance, acc.currency)}
+                {formatCurrency(acc.balance, settings.currency)}
               </p>
             </div>
             <div className="flex gap-1">

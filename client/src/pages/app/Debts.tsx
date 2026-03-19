@@ -148,14 +148,14 @@ export default function Debts() {
                 <div className="flex items-end justify-between mb-2">
                   <div>
                     <p className="text-xs text-muted-foreground font-body">
-                      Paid: {formatCurrency(d.paidAmount, d.currency)}
+                      Paid: {formatCurrency(d.paidAmount, settings.currency)}
                     </p>
                     <p className="text-sm font-bold tabular-nums font-body">
-                      {isPaid ? "Fully Paid" : `${formatCurrency(remaining, d.currency)} remaining`}
+                      {isPaid ? "Fully Paid" : `${formatCurrency(remaining, settings.currency)} remaining`}
                     </p>
                   </div>
                   <p className="text-lg font-extrabold tabular-nums font-display">
-                    {formatCurrency(d.totalAmount, d.currency)}
+                    {formatCurrency(d.totalAmount, settings.currency)}
                   </p>
                 </div>
 

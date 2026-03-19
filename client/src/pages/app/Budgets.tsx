@@ -108,7 +108,7 @@ export default function Budgets() {
                   <div className="flex-1">
                     <p className="text-sm font-semibold font-body">{cat?.name || "Unknown"}</p>
                     <p className="text-xs text-muted-foreground font-body">
-                      {formatCurrency(spent, b.currency)} / {formatCurrency(b.limit, b.currency)}
+                      {formatCurrency(spent, settings.currency)} / {formatCurrency(b.limit, settings.currency)}
                     </p>
                   </div>
                   <button
@@ -128,7 +128,7 @@ export default function Budgets() {
                 </div>
                 {isOver && (
                   <p className="text-xs text-destructive mt-1 font-body">
-                    Over budget by {formatCurrency(spent - b.limit, b.currency)}!
+                    Over budget by {formatCurrency(spent - b.limit, settings.currency)}!
                   </p>
                 )}
               </motion.div>

@@ -157,7 +157,7 @@ export default function Recurring() {
                         }`}
                       >
                         {entry.type === "income" ? "+" : "-"}
-                        {formatCurrency(entry.amount, entry.currency)}
+                        {formatCurrency(entry.amount, settings.currency)}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 mt-1">

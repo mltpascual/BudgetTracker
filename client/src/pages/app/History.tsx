@@ -458,7 +458,7 @@ export default function History() {
                       deleteTransaction(tx.id);
                       toast.success(lang === "fil" ? "Na-delete na ang transaction" : "Transaction deleted");
                     }}
-                    deleteLabel={`${cat?.name || "Unknown"} — ${formatCurrency(tx.amount, tx.currency)}`}
+                    deleteLabel={`${cat?.name || "Unknown"} — ${formatCurrency(tx.amount, settings.currency)}`}
                   >
                     <div className="bg-card rounded-xl p-3 border border-border/50 flex items-center gap-3">
                       <CategoryIcon
@@ -483,7 +483,7 @@ export default function History() {
                         }`}
                       >
                         {tx.type === "income" ? "+" : "-"}
-                        {formatCurrency(tx.amount, tx.currency)}
+                        {formatCurrency(tx.amount, settings.currency)}
                       </p>
                     </div>
                   </SwipeableRow>
@@ -526,7 +526,7 @@ export default function History() {
                         deleteTransaction(tx.id);
                         toast.success(lang === "fil" ? "Na-delete na ang transaction" : "Transaction deleted");
                       }}
-                      deleteLabel={`${cat?.name || "Unknown"} — ${formatCurrency(tx.amount, tx.currency)}`}
+                      deleteLabel={`${cat?.name || "Unknown"} — ${formatCurrency(tx.amount, settings.currency)}`}
                     >
                       <div className="bg-card rounded-xl p-3 border border-border/50 flex items-center gap-3">
                         <CategoryIcon
@@ -551,7 +551,7 @@ export default function History() {
                           }`}
                         >
                           {tx.type === "income" ? "+" : "-"}
-                          {formatCurrency(tx.amount, tx.currency)}
+                          {formatCurrency(tx.amount, settings.currency)}
                         </p>
                       </div>
                     </SwipeableRow>

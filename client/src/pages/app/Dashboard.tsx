@@ -554,7 +554,7 @@ export default function Dashboard() {
                           }`}
                         >
                           {tx.type === "income" ? "+" : "-"}
-                          {formatCurrency(tx.amount, tx.currency)}
+                          {formatCurrency(tx.amount, currency)}
                         </p>
                       </div>
                     );
@@ -611,7 +611,7 @@ export default function Dashboard() {
                       {tmpl.name}
                     </span>
                     <span className="text-[10px] tabular-nums font-body text-muted-foreground">
-                      {formatCurrency(tmpl.amount, tmpl.currency)}
+                      {formatCurrency(tmpl.amount, currency)}
                     </span>
                   </button>
                 );

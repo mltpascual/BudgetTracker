@@ -32,14 +32,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <div className="w-full max-w-[430px] min-h-screen relative flex flex-col">
         {/* Scrollable content area */}
         <main className="flex-1 overflow-y-auto pb-24">
-          <motion.div
-            key={location}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-          >
-            {children}
-          </motion.div>
+          <div>{children}</div>
         </main>
 
         {/* Bottom Navigation */}

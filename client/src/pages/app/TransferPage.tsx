@@ -104,7 +104,7 @@ export default function TransferPage() {
                 <div className="text-left">
                   <p className="font-semibold">{acc.name}</p>
                   <p className="text-[10px] text-muted-foreground tabular-nums">
-                    {formatCurrency(acc.balance, acc.currency)}
+                    {formatCurrency(acc.balance, currency)}
                   </p>
                 </div>
               </button>
@@ -142,7 +142,7 @@ export default function TransferPage() {
                 <div className="text-left">
                   <p className="font-semibold">{acc.name}</p>
                   <p className="text-[10px] text-muted-foreground tabular-nums">
-                    {formatCurrency(acc.balance, acc.currency)}
+                    {formatCurrency(acc.balance, currency)}
                   </p>
                 </div>
               </button>
@@ -252,7 +252,7 @@ export default function TransferPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-bold tabular-nums font-body text-primary">
-                        {formatCurrency(tr.amount, tr.currency)}
+                        {formatCurrency(tr.amount, currency)}
                       </p>
                       <button
                         onClick={() => {

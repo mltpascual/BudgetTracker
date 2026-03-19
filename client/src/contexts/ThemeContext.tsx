@@ -75,10 +75,8 @@ export function ThemeProvider({
     COLOR_THEMES.forEach((t) => {
       root.classList.remove(`theme-${t.id}`);
     });
-    // Add current theme class (teal is default/root, no class needed)
-    if (colorTheme !== "teal") {
-      root.classList.add(`theme-${colorTheme}`);
-    }
+    // Always add current theme class
+    root.classList.add(`theme-${colorTheme}`);
     localStorage.setItem("colorTheme", colorTheme);
   }, [colorTheme]);
 

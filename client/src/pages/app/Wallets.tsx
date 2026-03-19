@@ -5,7 +5,8 @@
 import { useState } from "react";
 import { useTipidStore, formatCurrency, generateId, type Account, type AccountType } from "@/lib/store";
 import { motion } from "framer-motion";
-import { Plus, Pencil, Trash2, X, Check, Wallet } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Check, Wallet, ArrowRightLeft } from "lucide-react";
+import { Link } from "wouter";
 import { toast } from "sonner";
 
 const ACCOUNT_ICONS: Record<AccountType, string> = {
@@ -106,6 +107,12 @@ export default function Wallets() {
         <p className="text-3xl font-extrabold font-display tabular-nums mt-1">
           {formatCurrency(totalBalance, settings.currency)}
         </p>
+        <Link href="/app/transfer">
+          <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 text-xs font-semibold font-body active:scale-95 transition-transform">
+            <ArrowRightLeft className="w-3.5 h-3.5" />
+            Transfer Between Wallets
+          </div>
+        </Link>
       </motion.div>
 
       {/* Account List */}

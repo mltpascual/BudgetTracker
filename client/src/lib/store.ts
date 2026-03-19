@@ -81,6 +81,16 @@ export interface RecurringEntry {
   active: boolean;
 }
 
+export interface Transfer {
+  id: string;
+  fromAccountId: string;
+  toAccountId: string;
+  amount: number;
+  date: string;
+  note: string;
+  currency: string;
+}
+
 export interface UserSettings {
   name: string;
   currency: string;
@@ -135,6 +145,7 @@ interface TipidStore {
   goals: Goal[];
   debts: Debt[];
   recurringEntries: RecurringEntry[];
+  transfers: Transfer[];
   settings: UserSettings;
 
   // Transaction actions
@@ -170,6 +181,13 @@ interface TipidStore {
   updateRecurring: (id: string, r: Partial<RecurringEntry>) => void;
   deleteRecurring: (id: string) => void;
 
+  // Transfer actions
+  addTransfer: (t: Omit<Transfer, "id">) => void;
+  deleteTransfer: (id: string) => void;
+
+  // Recurring processing
+  processRecurring: () => void;
+
   // Settings
   updateSettings: (s: Partial<UserSettings>) => void;
 
@@ -190,6 +208,7 @@ export const useTipidStore = create<TipidStore>()(
       goals: [],
       debts: [],
       recurringEntries: [],
+      transfers: [],
       settings: DEFAULT_SETTINGS,
 
       // ── Transactions ──
@@ -298,6 +317,72 @@ export const useTipidStore = create<TipidStore>()(
           recurringEntries: s.recurringEntries.filter((x) => x.id !== id),
         })),
 
+      // ── Transfers ──
+      addTransfer: (t) => {
+        const newT: Transfer = { ...t, id: generateId() };
+        set((s) => {
+          const accounts = s.accounts.map((a) => {
+            if (a.id === newT.fromAccountId) {
+              return { ...a, balance: a.balance - newT.amount };
+            }
+            if (a.id === newT.toAccountId) {
+              return { ...a, balance: a.balance + newT.amount };
+            }
+            return a;
+          });
+          return { transfers: [...s.transfers, newT], accounts };
+        });
+      },
+      deleteTransfer: (id) =>
+        set((s) => {
+          const tr = s.transfers.find((x) => x.id === id);
+          const accounts = tr
+            ? s.accounts.map((a) => {
+                if (a.id === tr.fromAccountId) return { ...a, balance: a.balance + tr.amount };
+                if (a.id === tr.toAccountId) return { ...a, balance: a.balance - tr.amount };
+                return a;
+              })
+            : s.accounts;
+          return { transfers: s.transfers.filter((x) => x.id !== id), accounts };
+        }),
+
+      // ── Process Recurring ──
+      processRecurring: () => {
+        const state = get();
+        const now = new Date();
+        const todayStr = now.toISOString().split("T")[0];
+        let changed = false;
+        const updatedEntries = state.recurringEntries.map((entry) => {
+          if (!entry.active) return entry;
+          let nextDue = new Date(entry.nextDue);
+          const created: Omit<Transaction, "id">[] = [];
+          while (nextDue <= now) {
+            created.push({
+              amount: entry.amount,
+              type: entry.type,
+              categoryId: entry.categoryId,
+              accountId: entry.accountId,
+              date: nextDue.toISOString(),
+              note: `[Auto] ${entry.note}`,
+              currency: entry.currency,
+            });
+            if (entry.frequency === "daily") nextDue.setDate(nextDue.getDate() + 1);
+            else if (entry.frequency === "weekly") nextDue.setDate(nextDue.getDate() + 7);
+            else nextDue.setMonth(nextDue.getMonth() + 1);
+          }
+          if (created.length > 0) {
+            changed = true;
+            created.forEach((t) => state.addTransaction(t));
+            return { ...entry, nextDue: nextDue.toISOString() };
+          }
+          return entry;
+        });
+        if (changed) {
+          set({ recurringEntries: updatedEntries });
+          console.log("[Tipid] Processed recurring entries");
+        }
+      },
+
       // ── Settings ──
       updateSettings: (s) =>
         set((state) => ({ settings: { ...state.settings, ...s } })),
@@ -315,6 +400,7 @@ export const useTipidStore = create<TipidStore>()(
           goals: state.goals,
           debts: state.debts,
           recurringEntries: state.recurringEntries,
+          transfers: state.transfers,
           settings: state.settings,
         };
         console.log("[Tipid-Storage] Exporting data");
@@ -333,6 +419,7 @@ export const useTipidStore = create<TipidStore>()(
             goals: data.goals || [],
             debts: data.debts || [],
             recurringEntries: data.recurringEntries || [],
+            transfers: data.transfers || [],
             settings: data.settings || DEFAULT_SETTINGS,
           });
           return true;
@@ -351,6 +438,7 @@ export const useTipidStore = create<TipidStore>()(
           goals: [],
           debts: [],
           recurringEntries: [],
+          transfers: [],
           settings: DEFAULT_SETTINGS,
         });
       },

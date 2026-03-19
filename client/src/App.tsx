@@ -14,6 +14,9 @@ import Settings from "./pages/app/Settings";
 import Budgets from "./pages/app/Budgets";
 import Goals from "./pages/app/Goals";
 import Debts from "./pages/app/Debts";
+import Recurring from "./pages/app/Recurring";
+import Analytics from "./pages/app/Analytics";
+import TransferPage from "./pages/app/TransferPage";
 
 function AppRoutes() {
   return (
@@ -27,6 +30,9 @@ function AppRoutes() {
         <Route path="/app/budgets" component={Budgets} />
         <Route path="/app/goals" component={Goals} />
         <Route path="/app/debts" component={Debts} />
+        <Route path="/app/recurring" component={Recurring} />
+        <Route path="/app/analytics" component={Analytics} />
+        <Route path="/app/transfer" component={TransferPage} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>

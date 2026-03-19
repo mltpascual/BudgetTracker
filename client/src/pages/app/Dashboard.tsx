@@ -12,6 +12,9 @@ import {
   HandCoins,
   TrendingUp,
   ChevronRight,
+  Repeat,
+  BarChart3,
+  ArrowRightLeft,
 } from "lucide-react";
 import { useMemo } from "react";
 
@@ -67,6 +70,9 @@ export default function Dashboard() {
     { label: "Budgets", icon: Target, href: "/app/budgets", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" },
     { label: "Goals", icon: TrendingUp, href: "/app/goals", color: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400" },
     { label: "Debts", icon: HandCoins, href: "/app/debts", color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
+    { label: "Recurring", icon: Repeat, href: "/app/recurring", color: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400" },
+    { label: "Analytics", icon: BarChart3, href: "/app/analytics", color: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400" },
+    { label: "Transfer", icon: ArrowRightLeft, href: "/app/transfer", color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400" },
   ];
 
   return (
@@ -136,7 +142,7 @@ export default function Dashboard() {
       </motion.div>
 
       {/* Quick Links */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2">
         {quickLinks.map((link, i) => (
           <Link key={link.href} href={link.href}>
             <motion.div

@@ -55,12 +55,13 @@ const CATEGORY_COLORS = [
 export default function Settings() {
   const {
     settings, updateSettings, exportData, importData, resetAll,
-    transactions, categories, accounts,
+    transactions, categories, accounts, addTransaction,
     addCategory, updateCategory, deleteCategory,
     loadMockData, clearMockData, hasMockData,
   } = useTipidStore();
   const { theme, setTheme, colorTheme, setColorTheme } = useTheme();
   const fileRef = useRef<HTMLInputElement>(null);
+  const csvFileRef = useRef<HTMLInputElement>(null);
   const [showReset, setShowReset] = useState(false);
   const [name, setName] = useState(settings.name);
   const [mockLoaded, setMockLoaded] = useState(() => hasMockData());
@@ -128,6 +129,72 @@ export default function Settings() {
         setName(useTipidStore.getState().settings.name);
       } else {
         toast.error("Invalid backup file");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
+  const handleImportCSV = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const text = ev.target?.result as string;
+        const lines = text.trim().split("\n");
+        if (lines.length < 2) {
+          toast.error("CSV file is empty or has no data rows");
+          return;
+        }
+        const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
+        const dateIdx = headers.findIndex(h => h === "date");
+        const typeIdx = headers.findIndex(h => h === "type");
+        const catIdx = headers.findIndex(h => h === "category");
+        const accIdx = headers.findIndex(h => h === "account");
+        const amtIdx = headers.findIndex(h => h === "amount");
+        const curIdx = headers.findIndex(h => h === "currency");
+        const noteIdx = headers.findIndex(h => h === "note");
+        if (dateIdx === -1 || typeIdx === -1 || amtIdx === -1) {
+          toast.error("CSV must have Date, Type, and Amount columns");
+          return;
+        }
+        let imported = 0;
+        for (let i = 1; i < lines.length; i++) {
+          const vals = lines[i].match(/("[^"]*"|[^,]+)/g)?.map(v => v.replace(/^"|"$/g, "").trim()) || [];
+          if (vals.length < 3) continue;
+          const dateStr = vals[dateIdx];
+          const type = vals[typeIdx]?.toLowerCase() as "expense" | "income";
+          if (type !== "expense" && type !== "income") continue;
+          const amount = parseFloat(vals[amtIdx]);
+          if (isNaN(amount) || amount <= 0) continue;
+          const catName = catIdx >= 0 ? vals[catIdx] : "";
+          const accName = accIdx >= 0 ? vals[accIdx] : "";
+          const currency = curIdx >= 0 ? vals[curIdx] : settings.currency;
+          const note = noteIdx >= 0 ? vals[noteIdx] : "";
+          const cat = categories.find(c => c.name.toLowerCase() === catName.toLowerCase() && c.type === type);
+          const acc = accounts.find(a => a.name.toLowerCase() === accName.toLowerCase());
+          const parsedDate = new Date(dateStr);
+          const date = isNaN(parsedDate.getTime()) ? new Date().toISOString() : parsedDate.toISOString();
+          addTransaction({
+            amount,
+            type,
+            categoryId: cat?.id || (type === "expense" ? "others-exp" : "others-inc"),
+            accountId: acc?.id || accounts[0]?.id || "cash",
+            date,
+            note: note || `[CSV Import] Row ${i}`,
+            currency,
+          });
+          imported++;
+        }
+        if (imported > 0) {
+          toast.success(`Imported ${imported} transactions from CSV!`);
+        } else {
+          toast.error("No valid transactions found in CSV");
+        }
+      } catch (err) {
+        console.error("CSV import error:", err);
+        toast.error("Failed to parse CSV file");
       }
     };
     reader.readAsText(file);
@@ -689,6 +756,26 @@ export default function Settings() {
               type="file"
               accept=".json"
               onChange={handleImport}
+              className="hidden"
+            />
+            <button
+              onClick={() => csvFileRef.current?.click()}
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-background border border-border hover:bg-accent transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                <div className="text-left">
+                  <span className="text-sm font-body block">Import CSV</span>
+                  <span className="text-[10px] text-muted-foreground">Import transactions from CSV file</span>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+            <input
+              ref={csvFileRef}
+              type="file"
+              accept=".csv"
+              onChange={handleImportCSV}
               className="hidden"
             />
           </div>

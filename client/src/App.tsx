@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
@@ -18,8 +19,14 @@ import Recurring from "./pages/app/Recurring";
 import Analytics from "./pages/app/Analytics";
 import TransferPage from "./pages/app/TransferPage";
 import MonthlySummary from "./pages/app/MonthlySummary";
+import { useTipidStore } from "@/lib/store";
 
 function AppRoutes() {
+  const processRecurring = useTipidStore((s) => s.processRecurring);
+  useEffect(() => {
+    processRecurring();
+  }, [processRecurring]);
+
   return (
     <AppLayout>
       <Switch>

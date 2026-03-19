@@ -75,6 +75,22 @@ export default function Debts() {
         </button>
       </div>
 
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="bg-destructive/10 rounded-xl p-3">
+          <p className="text-[10px] text-destructive font-body font-semibold uppercase tracking-wide">I Owe</p>
+          <p className="text-lg font-extrabold font-display tabular-nums text-destructive">
+            {formatCurrency(debts.filter(d => d.type === "owe").reduce((s, d) => s + (d.totalAmount - d.paidAmount), 0), settings.currency)}
+          </p>
+        </div>
+        <div className="bg-emerald-500/10 rounded-xl p-3">
+          <p className="text-[10px] text-emerald-600 font-body font-semibold uppercase tracking-wide">Owed To Me</p>
+          <p className="text-lg font-extrabold font-display tabular-nums text-emerald-600">
+            {formatCurrency(debts.filter(d => d.type === "owed").reduce((s, d) => s + (d.totalAmount - d.paidAmount), 0), settings.currency)}
+          </p>
+        </div>
+      </div>
+
       {/* Tab Toggle */}
       <div className="bg-muted rounded-xl p-1 flex mb-5">
         {(["owe", "owed"] as const).map((t) => (
@@ -200,7 +216,7 @@ export default function Debts() {
           onClick={() => setShowForm(false)}
         >
           <motion.div
-            className="bg-card w-full max-w-[430px] rounded-t-3xl p-6"
+            className="bg-card w-full max-w-[430px] rounded-t-3xl p-6 pb-10 max-h-[85vh] overflow-y-auto"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             transition={{ type: "spring", damping: 25 }}

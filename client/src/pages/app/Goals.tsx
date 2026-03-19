@@ -179,7 +179,7 @@ export default function Goals() {
           onClick={() => setShowForm(false)}
         >
           <motion.div
-            className="bg-card w-full max-w-[430px] rounded-t-3xl p-6"
+            className="bg-card w-full max-w-[430px] rounded-t-3xl p-6 pb-10 max-h-[85vh] overflow-y-auto"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             transition={{ type: "spring", damping: 25 }}

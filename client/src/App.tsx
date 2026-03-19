@@ -6,7 +6,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import AppLayout from "./components/AppLayout";
 import InstallPrompt from "./components/InstallPrompt";
-import OnboardingWalkthrough from "./components/OnboardingWalkthrough";
 import OfflineIndicator from "./components/OfflineIndicator";
 import DashboardSkeleton from "./components/skeletons/DashboardSkeleton";
 import HistorySkeleton from "./components/skeletons/HistorySkeleton";
@@ -99,7 +98,6 @@ function App() {
           <Router />
           <InstallPrompt />
           <OfflineIndicator />
-          <OnboardingWalkthrough />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

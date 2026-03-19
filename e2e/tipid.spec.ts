@@ -27,7 +27,6 @@ async function setupCleanState(page: Page) {
   await page.evaluate(() => {
     localStorage.clear();
     // Pre-set flags to skip onboarding and install prompt
-    localStorage.setItem('tipid-onboarding-done', '1');
     localStorage.setItem('tipid-install-dismissed', Date.now().toString());
     localStorage.setItem('tipid-swipe-hint-seen', '1');
   });
@@ -53,7 +52,6 @@ test.describe("Landing Page", () => {
     // Pre-set flags to prevent onboarding/install overlays from blocking navigation
     await page.goto("/");
     await page.evaluate(() => {
-      localStorage.setItem('tipid-onboarding-done', '1');
       localStorage.setItem('tipid-install-dismissed', Date.now().toString());
     });
     await page.reload();

@@ -1,83 +1,220 @@
 /**
  * TIPID — Landing Page
- * Marketing page with hero, features, and CTA. Tarsi-inspired layout.
+ * Polished layout: Hero → Product Preview (generated mockup) → Feature Sections (6 alternating, with generated mockups)
  * Supports English/Filipino via i18n.
  */
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import {
-  Wallet,
-  CalendarDays,
-  Target,
-  TrendingUp,
-  HandCoins,
-  Download,
   Shield,
   Smartphone,
   ArrowRight,
+  LayoutGrid,
+  Wallet,
+  Target,
+  BarChart3,
+  CalendarDays,
+  Settings,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n";
 
+/* ── External mascot assets ── */
 const MASCOT_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-hero-bp3JZP7pTnsQwyUv8GpRTC.webp";
 const MASCOT_HAPPY = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-happy-MhYqoPSPsRvFcB3CkzXrzP.webp";
 const MASCOT_COIN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-coin-bBXSjJ8mXoXLhUFaH3AN8S.webp";
 
+/* ── Generated mockup image paths ── */
+const M = {
+  preview4: "/assets/mockups/preview-4phones.png",
+  dashboard: "/assets/mockups/mockup-dashboard.png",
+  wallets: "/assets/mockups/mockup-wallets.png",
+  analytics: "/assets/mockups/mockup-analytics.png",
+  goals: "/assets/mockups/mockup-goals.png",
+  history: "/assets/mockups/mockup-history.png",
+  settings: "/assets/mockups/mockup-settings.png",
+};
+
+/* ── Animation helpers ── */
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-50px" },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.6, ease: [0, 0, 0.2, 1] as const },
 };
 
+const fadeLeft = {
+  initial: { opacity: 0, x: -40 },
+  whileInView: { opacity: 1, x: 0 },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.6, ease: [0, 0, 0.2, 1] as const },
+};
+
+const fadeRight = {
+  initial: { opacity: 0, x: 40 },
+  whileInView: { opacity: 1, x: 0 },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.6, ease: [0, 0, 0.2, 1] as const },
+};
+
+/* ── Feature Section Component ── */
+function FeatureSection({
+  icon: Icon,
+  label,
+  heading,
+  description,
+  mockup,
+  reverse = false,
+  bgAccent = false,
+}: {
+  icon: React.ElementType;
+  label: string;
+  heading: string;
+  description: string;
+  mockup: string;
+  reverse?: boolean;
+  bgAccent?: boolean;
+}) {
+  return (
+    <section className={`py-14 md:py-20 ${bgAccent ? "bg-primary/[0.03]" : ""}`}>
+      <div
+        className={`max-w-6xl mx-auto px-5 flex flex-col ${
+          reverse ? "md:flex-row-reverse" : "md:flex-row"
+        } items-center gap-8 md:gap-14`}
+      >
+        {/* Text side */}
+        <motion.div
+          className="flex-1 max-w-lg"
+          {...(reverse ? fadeRight : fadeLeft)}
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Icon className="w-5 h-5 text-primary" />
+            <span className="text-xs font-bold font-display uppercase tracking-widest text-primary">
+              {label}
+            </span>
+          </div>
+          <h2 className="text-2xl md:text-4xl font-black font-display text-foreground leading-tight mb-4">
+            {heading}
+          </h2>
+          <p className="text-base md:text-lg text-muted-foreground font-body leading-relaxed">
+            {description}
+          </p>
+        </motion.div>
+
+        {/* Mockup side */}
+        <motion.div
+          className="flex-1 flex justify-center"
+          {...(reverse ? fadeLeft : fadeRight)}
+        >
+          <img
+            src={mockup}
+            alt={label}
+            className="w-full max-w-[320px] md:max-w-[380px] h-auto object-contain drop-shadow-xl"
+            loading="lazy"
+          />
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ── Main Landing Page ── */
 export default function Landing() {
   const { t, lang } = useLanguage();
 
+  /* Feature sections data — 6 key features only */
   const FEATURES = [
     {
-      icon: Wallet,
-      title: lang === "fil" ? "Multiple Wallets" : "Multiple Wallets",
-      desc: lang === "fil" ? "I-track ang cash, bank accounts, at e-wallets mo sa isang lugar." : "Track cash, bank accounts, and e-wallets all in one place.",
-      color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+      icon: LayoutGrid,
+      label: lang === "fil" ? "Smart Dashboard" : "Smart Dashboard",
+      heading:
+        lang === "fil"
+          ? "Makita ang buong money picture mo sa isang tingin."
+          : "See your full money picture at a glance.",
+      description:
+        lang === "fil"
+          ? "Total balance, income vs expenses, monthly budget progress, quick actions, goals, debts, at recurring entries — lahat nasa home screen mo."
+          : "Total balance, income vs expenses, monthly budget progress, quick actions, goals, debts, and recurring entries — all on your home screen.",
+      mockup: M.dashboard,
     },
     {
-      icon: CalendarDays,
-      title: lang === "fil" ? "Calendar History" : "Calendar History",
-      desc: lang === "fil" ? "Tingnan ang spending patterns mo gamit ang monthly calendar view." : "See your spending patterns with a beautiful monthly calendar view.",
-      color: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
+      icon: Wallet,
+      label: lang === "fil" ? "Multiple Wallets" : "Multiple Wallets",
+      heading:
+        lang === "fil"
+          ? "I-track ang lahat ng accounts mo sa isang lugar."
+          : "Track all your accounts in one place.",
+      description:
+        lang === "fil"
+          ? "Cash, BDO, GCash, BPI — lahat ng wallets mo with individual balances at insights kung gaano katagal ang pera mo."
+          : "Cash, BDO, GCash, BPI — all your wallets with individual balances and insights on how long your money lasts.",
+      mockup: M.wallets,
     },
     {
       icon: Target,
-      title: lang === "fil" ? "Monthly Budgets" : "Monthly Budgets",
-      desc: lang === "fil" ? "Mag-set ng spending limits per category at manatiling on track." : "Set spending limits per category and stay on track.",
-      color: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+      label: lang === "fil" ? "Goals & Savings" : "Goals & Savings",
+      heading:
+        lang === "fil"
+          ? "Mag-set ng goals at i-track ang savings mo."
+          : "Set goals and track your savings.",
+      description:
+        lang === "fil"
+          ? "Emergency fund, new laptop, Japan trip — i-set ang target amount at due date, at makita ang progress mo with visual bars."
+          : "Emergency fund, new laptop, Japan trip — set your target amount and due date, and see your progress with visual bars.",
+      mockup: M.goals,
     },
     {
-      icon: TrendingUp,
-      title: lang === "fil" ? "Savings Goals" : "Savings Goals",
-      desc: lang === "fil" ? "Mag-set ng targets at panoorin ang progress mo." : "Set targets and watch your progress grow over time.",
-      color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+      icon: BarChart3,
+      label: lang === "fil" ? "Analytics & Insights" : "Analytics & Insights",
+      heading:
+        lang === "fil"
+          ? "Makita kung saan napupunta ang pera mo."
+          : "See where your money goes.",
+      description:
+        lang === "fil"
+          ? "Donut charts, spending breakdown per category, income vs expense trends — lahat ng data na kailangan mo para mag-decide nang tama."
+          : "Donut charts, spending breakdown per category, income vs expense trends — all the data you need to make better decisions.",
+      mockup: M.analytics,
     },
     {
-      icon: HandCoins,
-      title: lang === "fil" ? "Debt Tracker" : "Debt Tracker",
-      desc: lang === "fil" ? "I-track ang utang mo at pinahiram mo." : "Keep track of what you owe and what others owe you.",
-      color: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400",
+      icon: CalendarDays,
+      label: lang === "fil" ? "Calendar History" : "Calendar History",
+      heading:
+        lang === "fil"
+          ? "Tingnan ang spending patterns mo sa calendar."
+          : "See your spending patterns on a calendar.",
+      description:
+        lang === "fil"
+          ? "Monthly calendar view with transaction dots, daily totals, at income/expense summary. Makita kung anong araw ka pinaka-gastos."
+          : "Monthly calendar view with transaction dots, daily totals, and income/expense summary. See which days you spend the most.",
+      mockup: M.history,
     },
     {
-      icon: Download,
-      title: lang === "fil" ? "JSON Backup" : "JSON Backup",
-      desc: lang === "fil" ? "I-export at i-import ang data mo anytime. Data mo, control mo." : "Export and import your data anytime. Your data, your control.",
-      color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+      icon: Settings,
+      label: lang === "fil" ? "Full Customization" : "Full Customization",
+      heading:
+        lang === "fil"
+          ? "I-customize ang lahat ayon sa gusto mo."
+          : "Customize everything to your liking.",
+      description:
+        lang === "fil"
+          ? "Language, currency, themes, custom categories, export/backup — ikaw ang boss ng app mo. Data mo, control mo."
+          : "Language, currency, themes, custom categories, export/backup — you're the boss of your app. Your data, your control.",
+      mockup: M.settings,
     },
   ];
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      {/* Nav */}
+      {/* ── Nav ── */}
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/30">
-        <div className="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={MASCOT_HAPPY} alt="Tipid" className="w-8 h-8 object-contain" />
             <span className="text-lg font-extrabold font-display text-foreground">Tipid</span>
+          </div>
+          <div className="hidden sm:flex items-center gap-6 text-sm font-medium font-body text-muted-foreground">
+            <a href="#preview" className="hover:text-foreground transition-colors">Preview</a>
+            <a href="#features" className="hover:text-foreground transition-colors">Features</a>
           </div>
           <Link href="/app">
             <span className="px-5 py-2 rounded-full bg-primary text-primary-foreground text-sm font-bold font-display active:scale-95 transition-transform">
@@ -87,14 +224,13 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* ── Hero Section ── */}
       <section className="relative overflow-hidden">
-        {/* Hero Image Background */}
         <div className="absolute inset-0 z-0">
           <img
             src={MASCOT_HERO}
-            alt="Tipid Hero"
-            className="w-full h-full object-cover opacity-20"
+            alt=""
+            className="w-full h-full object-cover opacity-15"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
         </div>
@@ -108,7 +244,7 @@ export default function Landing() {
             <img
               src={MASCOT_COIN}
               alt="Tipid Mascot"
-              className="w-32 h-32 mx-auto mb-6 object-contain drop-shadow-lg"
+              className="w-28 h-28 mx-auto mb-6 object-contain drop-shadow-lg"
             />
           </motion.div>
 
@@ -145,23 +281,28 @@ export default function Landing() {
                 {lang === "fil" ? "Mag-Start Na" : "Get Started"} <ArrowRight className="w-5 h-5" />
               </span>
             </Link>
+            <a
+              href="#preview"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-border text-sm font-bold font-display text-foreground hover:bg-accent transition-colors"
+            >
+              {lang === "fil" ? "Tingnan kung paano" : "See how it works"}
+            </a>
           </motion.div>
         </div>
       </section>
 
-      {/* Privacy Banner */}
-      <section className="max-w-5xl mx-auto px-5 -mt-6 mb-12 relative z-10">
+      {/* ── Privacy Banner ── */}
+      <section className="max-w-5xl mx-auto px-5 -mt-6 mb-16 relative z-10">
         <motion.div
           className="bg-card rounded-2xl p-5 border border-border/50 shadow-sm flex items-center gap-4"
           {...fadeUp}
-          transition={{ delay: 0.1 }}
         >
           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
             <Shield className="w-6 h-6 text-primary" />
           </div>
           <div>
             <p className="text-sm font-bold font-display text-foreground">
-              {lang === "fil" ? "100% Private & Offline" : "100% Private & Offline"}
+              100% Private &amp; Offline
             </p>
             <p className="text-xs text-muted-foreground font-body">
               {lang === "fil"
@@ -172,39 +313,72 @@ export default function Landing() {
         </motion.div>
       </section>
 
-      {/* Features */}
-      <section className="max-w-5xl mx-auto px-5 pb-16">
-        <motion.div className="text-center mb-10" {...fadeUp}>
-          <h2 className="text-2xl md:text-3xl font-extrabold font-display text-foreground mb-2">
-            {t("landingFeaturesDesc")}
-          </h2>
-          <p className="text-sm text-muted-foreground font-body">
-            {lang === "fil" ? "Simple pero powerful na tools para i-manage ang pera mo." : "Simple yet powerful tools to manage your money."}
-          </p>
-        </motion.div>
+      {/* ══════════════════════════════════════════════════════
+          PRODUCT PREVIEW — Generated 4-phone mockup image
+          ══════════════════════════════════════════════════════ */}
+      <section id="preview" className="py-16 md:py-24 bg-primary/[0.03]">
+        <div className="max-w-6xl mx-auto px-5">
+          <motion.div className="text-center mb-10 max-w-2xl mx-auto" {...fadeUp}>
+            <span className="text-xs font-bold font-display uppercase tracking-widest text-primary mb-3 block">
+              {lang === "fil" ? "Product Preview" : "Product Preview"}
+            </span>
+            <h2 className="text-3xl md:text-5xl font-black font-display text-foreground leading-tight mb-4">
+              {t("landingPreviewHeading")}
+            </h2>
+            <p className="text-base text-muted-foreground font-body leading-relaxed">
+              {t("landingPreviewDesc")}
+            </p>
+          </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {FEATURES.map((f, i) => (
-            <motion.div
-              key={f.title}
-              className="bg-card rounded-2xl p-5 border border-border/50 hover:shadow-md transition-shadow"
-              {...fadeUp}
-              transition={{ delay: i * 0.08 }}
-            >
-              <div className={`w-12 h-12 rounded-xl ${f.color} flex items-center justify-center mb-4`}>
-                <f.icon className="w-6 h-6" />
-              </div>
-              <h3 className="text-base font-bold font-display text-foreground mb-1">{f.title}</h3>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed">{f.desc}</p>
-            </motion.div>
-          ))}
+          {/* Generated 4-phone mockup image */}
+          <motion.div className="max-w-5xl mx-auto" {...fadeUp}>
+            <img
+              src={M.preview4}
+              alt="Tipid app preview showing Dashboard, Wallets, Analytics, and History screens"
+              className="w-full h-auto rounded-2xl"
+              loading="lazy"
+            />
+          </motion.div>
         </div>
       </section>
 
-      {/* PWA Install Banner */}
-      <section className="max-w-5xl mx-auto px-5 pb-16">
+      {/* ══════════════════════════════════════════════════════
+          FEATURES — 6 key features with generated mockups
+          ══════════════════════════════════════════════════════ */}
+      <section id="features" className="pt-16 md:pt-20">
+        <div className="max-w-6xl mx-auto px-5">
+          <motion.div className="text-center mb-4 max-w-2xl mx-auto" {...fadeUp}>
+            <span className="text-xs font-bold font-display uppercase tracking-widest text-primary mb-3 block">
+              {t("landingFeatures")}
+            </span>
+            <h2 className="text-3xl md:text-5xl font-black font-display text-foreground leading-tight mb-4">
+              {t("landingFeaturesHeading")}
+            </h2>
+            <p className="text-base text-muted-foreground font-body leading-relaxed">
+              {t("landingFeaturesSubDesc")}
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Individual feature sections — alternating left/right */}
+      {FEATURES.map((feature, index) => (
+        <FeatureSection
+          key={feature.label}
+          icon={feature.icon}
+          label={feature.label}
+          heading={feature.heading}
+          description={feature.description}
+          mockup={feature.mockup}
+          reverse={index % 2 === 1}
+          bgAccent={index % 2 === 0}
+        />
+      ))}
+
+      {/* ── CTA / Install Banner ── */}
+      <section className="max-w-5xl mx-auto px-5 py-16">
         <motion.div
-          className="bg-primary rounded-2xl p-6 md:p-8 text-primary-foreground text-center shadow-lg shadow-primary/20"
+          className="bg-primary rounded-2xl p-6 md:p-10 text-primary-foreground text-center shadow-lg shadow-primary/20"
           {...fadeUp}
         >
           <Smartphone className="w-10 h-10 mx-auto mb-4 opacity-80" />
@@ -224,7 +398,7 @@ export default function Landing() {
         </motion.div>
       </section>
 
-      {/* Footer */}
+      {/* ── Footer ── */}
       <footer className="border-t border-border/30 py-8">
         <div className="max-w-5xl mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">

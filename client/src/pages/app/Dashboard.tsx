@@ -309,13 +309,13 @@ export default function Dashboard() {
             {quickLinks.map((link, i) => (
               <Link key={link.href} href={link.href}>
                 <motion.div
-                  className="bg-primary/10 text-primary rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-95 transition-transform"
+                  className="bg-primary text-primary-foreground rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-95 transition-transform shadow-sm"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.25 + i * 0.05 }}
                 >
-                  <link.icon className="w-6 h-6" />
-                  <span className="text-xs font-semibold font-body">
+                  <link.icon className="w-6 h-6 text-white" />
+                  <span className="text-xs font-semibold font-body text-white">
                     {link.label}
                   </span>
                 </motion.div>

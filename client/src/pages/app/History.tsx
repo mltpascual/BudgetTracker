@@ -6,11 +6,11 @@ import { useState, useMemo } from "react";
 import { useTipidStore, formatCurrency, type Transaction } from "@/lib/store";
 import CategoryIcon from "@/components/CategoryIcon";
 import EditTransactionDialog from "@/components/EditTransactionDialog";
+import SwipeableRow from "@/components/SwipeableRow";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft,
   ChevronRight,
-  Pencil,
   Search,
   SlidersHorizontal,
   X,
@@ -393,41 +393,41 @@ export default function History() {
               {selectedTransactions.map((tx) => {
                 const cat = categories.find((c) => c.id === tx.categoryId);
                 return (
-                  <div
+                  <SwipeableRow
                     key={tx.id}
-                    className="bg-card rounded-xl p-3 border border-border/50 flex items-center gap-3"
+                    onEdit={() => setEditingTransaction(tx)}
+                    onDelete={() => {
+                      deleteTransaction(tx.id);
+                      toast.success(lang === "fil" ? "Na-delete na ang transaction" : "Transaction deleted");
+                    }}
                   >
-                    <CategoryIcon
-                      categoryId={tx.categoryId}
-                      iconName={cat?.icon}
-                      color={cat?.color}
-                      size="md"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold font-body truncate">
-                        {cat?.name || "Unknown"}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {tx.note || "—"}
+                    <div className="bg-card rounded-xl p-3 border border-border/50 flex items-center gap-3">
+                      <CategoryIcon
+                        categoryId={tx.categoryId}
+                        iconName={cat?.icon}
+                        color={cat?.color}
+                        size="md"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold font-body truncate">
+                          {cat?.name || "Unknown"}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {tx.note || "—"}
+                        </p>
+                      </div>
+                      <p
+                        className={`text-sm font-bold tabular-nums font-body ${
+                          tx.type === "income"
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : "text-foreground"
+                        }`}
+                      >
+                        {tx.type === "income" ? "+" : "-"}
+                        {formatCurrency(tx.amount, tx.currency)}
                       </p>
                     </div>
-                    <p
-                      className={`text-sm font-bold tabular-nums font-body ${
-                        tx.type === "income"
-                          ? "text-emerald-600 dark:text-emerald-400"
-                          : "text-foreground"
-                      }`}
-                    >
-                      {tx.type === "income" ? "+" : "-"}
-                      {formatCurrency(tx.amount, tx.currency)}
-                    </p>
-                    <button
-                      onClick={() => setEditingTransaction(tx)}
-                      className="p-1.5 rounded-lg hover:bg-primary/10"
-                    >
-                      <Pencil className="w-3.5 h-3.5 text-primary" />
-                    </button>
-                  </div>
+                  </SwipeableRow>
                 );
               })}
             </div>
@@ -460,41 +460,41 @@ export default function History() {
                 .map((tx) => {
                   const cat = categories.find((c) => c.id === tx.categoryId);
                   return (
-                    <div
+                    <SwipeableRow
                       key={tx.id}
-                      className="bg-card rounded-xl p-3 border border-border/50 flex items-center gap-3"
+                      onEdit={() => setEditingTransaction(tx)}
+                      onDelete={() => {
+                        deleteTransaction(tx.id);
+                        toast.success(lang === "fil" ? "Na-delete na ang transaction" : "Transaction deleted");
+                      }}
                     >
-                      <CategoryIcon
-                        categoryId={tx.categoryId}
-                        iconName={cat?.icon}
-                        color={cat?.color}
-                        size="md"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold font-body truncate">
-                          {cat?.name || "Unknown"}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {tx.note || format(new Date(tx.date), "MMM d")}
+                      <div className="bg-card rounded-xl p-3 border border-border/50 flex items-center gap-3">
+                        <CategoryIcon
+                          categoryId={tx.categoryId}
+                          iconName={cat?.icon}
+                          color={cat?.color}
+                          size="md"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold font-body truncate">
+                            {cat?.name || "Unknown"}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {tx.note || format(new Date(tx.date), "MMM d")}
+                          </p>
+                        </div>
+                        <p
+                          className={`text-sm font-bold tabular-nums font-body ${
+                            tx.type === "income"
+                              ? "text-emerald-600 dark:text-emerald-400"
+                              : "text-foreground"
+                          }`}
+                        >
+                          {tx.type === "income" ? "+" : "-"}
+                          {formatCurrency(tx.amount, tx.currency)}
                         </p>
                       </div>
-                      <p
-                        className={`text-sm font-bold tabular-nums font-body ${
-                          tx.type === "income"
-                            ? "text-emerald-600 dark:text-emerald-400"
-                            : "text-foreground"
-                        }`}
-                      >
-                        {tx.type === "income" ? "+" : "-"}
-                        {formatCurrency(tx.amount, tx.currency)}
-                      </p>
-                      <button
-                        onClick={() => setEditingTransaction(tx)}
-                        className="p-1.5 rounded-lg hover:bg-primary/10"
-                      >
-                        <Pencil className="w-3.5 h-3.5 text-primary" />
-                      </button>
-                    </div>
+                    </SwipeableRow>
                   );
                 })}
             </div>

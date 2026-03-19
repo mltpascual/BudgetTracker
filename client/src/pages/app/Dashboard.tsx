@@ -3,6 +3,7 @@
  * Home screen with greeting, mascot tip, quick stats, budget overview, and quick links.
  */
 import { useTipidStore, formatCurrency } from "@/lib/store";
+import CategoryIcon from "@/components/CategoryIcon";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import {
@@ -16,7 +17,9 @@ import {
   BarChart3,
   ArrowRightLeft,
 } from "lucide-react";
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
+import { AnimatePresence } from "framer-motion";
+import Onboarding from "@/components/Onboarding";
 
 const MASCOT_HAPPY = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-happy-MhYqoPSPsRvFcB3CkzXrzP.webp";
 const MASCOT_COIN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-coin-bBXSjJ8mXoXLhUFaH3AN8S.webp";
@@ -39,6 +42,7 @@ function getGreeting(): string {
 
 export default function Dashboard() {
   const { transactions, accounts, budgets, goals, debts, categories, settings } = useTipidStore();
+  const [showOnboarding, setShowOnboarding] = useState(!settings.hasOnboarded);
   const currency = settings.currency;
 
   const tip = useMemo(() => TIPS[Math.floor(Math.random() * TIPS.length)], []);
@@ -77,6 +81,13 @@ export default function Dashboard() {
 
   return (
     <div className="px-5 pt-6 pb-4 space-y-5">
+      {/* Onboarding Walkthrough */}
+      <AnimatePresence>
+        {showOnboarding && (
+          <Onboarding onComplete={() => setShowOnboarding(false)} />
+        )}
+      </AnimatePresence>
+
       {/* Greeting + Mascot */}
       <div className="flex items-center justify-between">
         <div>
@@ -196,12 +207,12 @@ export default function Dashboard() {
                     key={tx.id}
                     className="bg-card rounded-xl p-3 border border-border/50 flex items-center gap-3"
                   >
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
-                      style={{ backgroundColor: (cat?.color || "#64748b") + "20" }}
-                    >
-                      {cat?.icon || "📦"}
-                    </div>
+                    <CategoryIcon
+                      categoryId={tx.categoryId}
+                      iconName={cat?.icon}
+                      color={cat?.color}
+                      size="md"
+                    />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold font-body truncate">
                         {cat?.name || "Unknown"}

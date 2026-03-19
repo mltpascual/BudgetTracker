@@ -1,28 +1,26 @@
-# Tipid v1.1 — New Features
+# Tipid v1.2 — Todo
 
-## Recurring Transactions
-- [ ] Add RecurringEntry type to store (frequency: daily/weekly/monthly/yearly, nextDue, active)
-- [ ] Add CRUD actions for recurring entries in store
-- [ ] Add auto-processing logic that creates transactions from due recurring entries on app load
-- [ ] Build RecurringTransactions page with list, add dialog, edit/delete
-- [ ] Add route and navigation link
+## 1. Replace Emoji Icons with Lucide SVG Icons
+- [ ] Create a category icon mapping component using Lucide React icons
+- [ ] Assign distinct colors per category (orange for food, blue for transport, pink for shopping, etc.)
+- [ ] Replace emoji icons in store default categories
+- [ ] Update all pages that render category icons: Dashboard, AddTransaction, History, Recurring, Analytics, Budgets
 
-## Spending Analytics
-- [ ] Build Analytics page with date range selector (monthly)
-- [ ] Add pie chart for expense category breakdown (Recharts PieChart)
-- [ ] Add bar chart for monthly income vs expense trend (Recharts BarChart)
-- [ ] Add summary stats (top category, average daily spend, etc.)
-- [ ] Add route and navigation link
+## 2. Export to CSV/JSON
+- [ ] Add export section in Settings page
+- [ ] Implement JSON export (full data backup)
+- [ ] Implement CSV export (transaction history)
+- [ ] Add download trigger using Blob + URL.createObjectURL
 
-## Transfer Between Wallets
-- [ ] Add Transfer type to store (fromAccountId, toAccountId, amount, date, note)
-- [ ] Add transfer action that debits source and credits destination
-- [ ] Build Transfer page/dialog accessible from Wallets page
-- [ ] Show transfers in transaction history with distinct styling
-- [ ] Add route and navigation link
+## 3. Category Customization
+- [ ] Add "Manage Categories" section in Settings
+- [ ] Build add category form with name, icon picker, color picker
+- [ ] Build edit category flow
+- [ ] Build delete category with safety check (no transactions using it)
+- [ ] Update store with addCategory, updateCategory, deleteCategory actions
 
-## Integration
-- [ ] Update Dashboard with quick links to new features
-- [ ] Update AppLayout bottom nav or add to settings/more menu
-- [ ] Test all features end-to-end
-- [ ] Save checkpoint
+## 4. Onboarding Walkthrough
+- [ ] Create onboarding state in store (hasCompletedOnboarding)
+- [ ] Build multi-step walkthrough overlay component
+- [ ] Design 4-5 steps with kalabaw mascot guiding user
+- [ ] Auto-show on first visit, skip option, manual trigger from Settings

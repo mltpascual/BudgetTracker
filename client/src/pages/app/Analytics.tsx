@@ -5,6 +5,7 @@
  */
 import { useState, useMemo } from "react";
 import { useTipidStore, formatCurrency } from "@/lib/store";
+import CategoryIcon from "@/components/CategoryIcon";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import {
@@ -83,7 +84,8 @@ export default function Analytics() {
           name: cat?.name || "Other",
           value: amount,
           color: cat?.color || "#64748b",
-          icon: cat?.icon || "📦",
+          icon: cat?.icon || "Package",
+          catId: catId,
         };
       })
       .sort((a, b) => b.value - a.value);
@@ -232,7 +234,10 @@ export default function Analytics() {
                 Top Category
               </p>
               <p className="text-base font-bold font-body mt-0.5">
-                {topCategory.icon} {topCategory.name}
+                <span className="inline-flex items-center gap-1">
+                  <CategoryIcon categoryId={topCategory.catId} iconName={topCategory.icon} color={topCategory.color} size="sm" />
+                  {topCategory.name}
+                </span>
               </p>
             </div>
           )}
@@ -297,8 +302,9 @@ export default function Analytics() {
                       className="w-3 h-3 rounded-full flex-shrink-0"
                       style={{ backgroundColor: item.color }}
                     />
-                    <span className="text-xs font-body flex-1">
-                      {item.icon} {item.name}
+                    <span className="text-xs font-body flex-1 flex items-center gap-1.5">
+                      <CategoryIcon categoryId={item.catId} iconName={item.icon} color={item.color} size="sm" />
+                      {item.name}
                     </span>
                     <span className="text-xs font-body tabular-nums text-muted-foreground">
                       {pct}%

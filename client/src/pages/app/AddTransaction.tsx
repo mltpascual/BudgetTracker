@@ -4,6 +4,7 @@
  */
 import { useState, useCallback } from "react";
 import { useTipidStore, formatCurrency } from "@/lib/store";
+import CategoryIcon from "@/components/CategoryIcon";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowLeft, Check, Delete } from "lucide-react";
@@ -174,7 +175,7 @@ export default function AddTransaction() {
                       : "bg-card border border-border/50"
                   }`}
                 >
-                  <span className="text-xl">{cat.icon}</span>
+                  <CategoryIcon categoryId={cat.id} iconName={cat.icon} color={cat.color} size="sm" />
                   <span className="text-[10px] font-body text-foreground truncate w-full text-center">
                     {cat.name}
                   </span>

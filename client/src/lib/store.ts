@@ -100,21 +100,21 @@ export interface UserSettings {
 
 // ─── Default Data ────────────────────────────────────────────────────
 const DEFAULT_CATEGORIES: Category[] = [
-  { id: "food", name: "Food", icon: "🍚", color: "#ef4444", type: "expense" },
-  { id: "transport", name: "Transport", icon: "🚌", color: "#f97316", type: "expense" },
-  { id: "bills", name: "Bills", icon: "📱", color: "#8b5cf6", type: "expense" },
-  { id: "shopping", name: "Shopping", icon: "🛒", color: "#ec4899", type: "expense" },
-  { id: "health", name: "Health", icon: "💊", color: "#14b8a6", type: "expense" },
-  { id: "entertainment", name: "Entertainment", icon: "🎮", color: "#6366f1", type: "expense" },
-  { id: "education", name: "Education", icon: "📚", color: "#0ea5e9", type: "expense" },
-  { id: "groceries", name: "Groceries", icon: "🥬", color: "#22c55e", type: "expense" },
-  { id: "rent", name: "Rent", icon: "🏠", color: "#a855f7", type: "expense" },
-  { id: "others-exp", name: "Others", icon: "📦", color: "#64748b", type: "expense" },
-  { id: "salary", name: "Salary", icon: "💰", color: "#22c55e", type: "income" },
-  { id: "freelance", name: "Freelance", icon: "💻", color: "#0ea5e9", type: "income" },
-  { id: "business", name: "Business", icon: "🏪", color: "#f97316", type: "income" },
-  { id: "gift", name: "Gift", icon: "🎁", color: "#ec4899", type: "income" },
-  { id: "others-inc", name: "Others", icon: "💵", color: "#64748b", type: "income" },
+  { id: "food", name: "Food", icon: "UtensilsCrossed", color: "#f97316", type: "expense" },
+  { id: "transport", name: "Transport", icon: "Bus", color: "#3b82f6", type: "expense" },
+  { id: "bills", name: "Bills", icon: "Smartphone", color: "#8b5cf6", type: "expense" },
+  { id: "shopping", name: "Shopping", icon: "ShoppingBag", color: "#ec4899", type: "expense" },
+  { id: "health", name: "Health", icon: "Heart", color: "#ef4444", type: "expense" },
+  { id: "entertainment", name: "Entertainment", icon: "Gamepad2", color: "#6366f1", type: "expense" },
+  { id: "education", name: "Education", icon: "GraduationCap", color: "#0ea5e9", type: "expense" },
+  { id: "groceries", name: "Groceries", icon: "ShoppingCart", color: "#22c55e", type: "expense" },
+  { id: "rent", name: "Rent", icon: "Home", color: "#a855f7", type: "expense" },
+  { id: "others-exp", name: "Others", icon: "Package", color: "#64748b", type: "expense" },
+  { id: "salary", name: "Salary", icon: "Banknote", color: "#22c55e", type: "income" },
+  { id: "freelance", name: "Freelance", icon: "Laptop", color: "#0ea5e9", type: "income" },
+  { id: "business", name: "Business", icon: "Store", color: "#f97316", type: "income" },
+  { id: "gift", name: "Gift", icon: "Gift", color: "#ec4899", type: "income" },
+  { id: "others-inc", name: "Others", icon: "Coins", color: "#64748b", type: "income" },
 ];
 
 const DEFAULT_ACCOUNTS: Account[] = [
@@ -160,6 +160,8 @@ interface TipidStore {
 
   // Category actions
   addCategory: (c: Omit<Category, "id">) => void;
+  updateCategory: (id: string, c: Partial<Category>) => void;
+  deleteCategory: (id: string) => void;
 
   // Budget actions
   addBudget: (b: Omit<Budget, "id">) => void;
@@ -270,6 +272,12 @@ export const useTipidStore = create<TipidStore>()(
       // ── Categories ──
       addCategory: (c) =>
         set((s) => ({ categories: [...s.categories, { ...c, id: generateId() }] })),
+      updateCategory: (id, c) =>
+        set((s) => ({
+          categories: s.categories.map((x) => (x.id === id ? { ...x, ...c } : x)),
+        })),
+      deleteCategory: (id) =>
+        set((s) => ({ categories: s.categories.filter((x) => x.id !== id) })),
 
       // ── Budgets ──
       addBudget: (b) =>

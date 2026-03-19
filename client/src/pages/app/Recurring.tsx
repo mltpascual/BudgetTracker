@@ -5,6 +5,7 @@
  */
 import { useState, useEffect } from "react";
 import { useTipidStore, formatCurrency, type RecurringEntry } from "@/lib/store";
+import CategoryIcon from "@/components/CategoryIcon";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -136,14 +137,12 @@ export default function Recurring() {
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-                    style={{
-                      backgroundColor: (cat?.color || "#64748b") + "20",
-                    }}
-                  >
-                    {cat?.icon || "📦"}
-                  </div>
+                  <CategoryIcon
+                    categoryId={entry.categoryId}
+                    iconName={cat?.icon}
+                    color={cat?.color}
+                    size="md"
+                  />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-semibold font-body truncate">
@@ -275,7 +274,7 @@ export default function Recurring() {
                         : "border-transparent bg-muted/50"
                     }`}
                   >
-                    <span className="text-lg">{cat.icon}</span>
+                    <CategoryIcon categoryId={cat.id} iconName={cat.icon} color={cat.color} size="sm" />
                     <span className="truncate w-full text-center text-[10px]">
                       {cat.name}
                     </span>

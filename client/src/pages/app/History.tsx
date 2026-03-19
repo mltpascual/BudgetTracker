@@ -4,6 +4,7 @@
  */
 import { useState, useMemo } from "react";
 import { useTipidStore, formatCurrency } from "@/lib/store";
+import CategoryIcon from "@/components/CategoryIcon";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -182,12 +183,12 @@ export default function History() {
                     key={tx.id}
                     className="bg-card rounded-xl p-3 border border-border/50 flex items-center gap-3"
                   >
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
-                      style={{ backgroundColor: (cat?.color || "#64748b") + "20" }}
-                    >
-                      {cat?.icon || "📦"}
-                    </div>
+                    <CategoryIcon
+                      categoryId={tx.categoryId}
+                      iconName={cat?.icon}
+                      color={cat?.color}
+                      size="md"
+                    />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold font-body truncate">{cat?.name || "Unknown"}</p>
                       <p className="text-xs text-muted-foreground truncate">{tx.note || "—"}</p>

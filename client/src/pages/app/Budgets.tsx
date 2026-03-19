@@ -4,6 +4,7 @@
  */
 import { useState, useMemo } from "react";
 import { useTipidStore, formatCurrency } from "@/lib/store";
+import CategoryIcon from "@/components/CategoryIcon";
 import { motion } from "framer-motion";
 import { Plus, X, Check, Trash2, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
@@ -98,12 +99,12 @@ export default function Budgets() {
                 transition={{ delay: i * 0.05 }}
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
-                    style={{ backgroundColor: (cat?.color || "#64748b") + "20" }}
-                  >
-                    {cat?.icon || "📦"}
-                  </div>
+                  <CategoryIcon
+                    categoryId={b.categoryId}
+                    iconName={cat?.icon}
+                    color={cat?.color}
+                    size="md"
+                  />
                   <div className="flex-1">
                     <p className="text-sm font-semibold font-body">{cat?.name || "Unknown"}</p>
                     <p className="text-xs text-muted-foreground font-body">
@@ -173,7 +174,7 @@ export default function Budgets() {
                           : "bg-background border border-border"
                       }`}
                     >
-                      <span className="text-lg">{cat.icon}</span>
+                      <CategoryIcon categoryId={cat.id} iconName={cat.icon} color={cat.color} size="sm" />
                       <span className="text-[9px] font-body truncate w-full text-center">{cat.name}</span>
                     </button>
                   ))}

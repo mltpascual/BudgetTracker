@@ -165,19 +165,19 @@ export default function AddTransaction() {
           {/* Category Selection */}
           <div className="mb-5">
             <p className="text-sm font-semibold font-body mb-2 text-foreground">Category</p>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-1.5">
               {filteredCategories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setCategoryId(cat.id)}
-                  className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-all active:scale-95 ${
+                  className={`flex flex-col items-center gap-0.5 p-2 rounded-xl transition-all active:scale-95 overflow-hidden ${
                     categoryId === cat.id
                       ? "bg-primary/15 border-2 border-primary"
                       : "bg-card border border-border/50"
                   }`}
                 >
                   <CategoryIcon categoryId={cat.id} iconName={cat.icon} color={cat.color} size="sm" />
-                  <span className="text-[10px] font-body text-foreground truncate w-full text-center">
+                  <span className="text-[10px] font-body text-foreground w-full text-center leading-tight line-clamp-2">
                     {cat.name}
                   </span>
                 </button>
@@ -188,12 +188,12 @@ export default function AddTransaction() {
           {/* Account Selection */}
           <div className="mb-5">
             <p className="text-sm font-semibold font-body mb-2 text-foreground">Account</p>
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
               {accounts.map((acc) => (
                 <button
                   key={acc.id}
                   onClick={() => setAccountId(acc.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl whitespace-nowrap transition-all active:scale-95 ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl whitespace-nowrap transition-all active:scale-95 shrink-0 ${
                     accountId === acc.id
                       ? "bg-primary/15 border-2 border-primary"
                       : "bg-card border border-border/50"

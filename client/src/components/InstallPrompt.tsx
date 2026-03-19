@@ -93,7 +93,7 @@ export default function InstallPrompt() {
               /* iOS Safari guide */
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-sm">I-install ang Tipid</h3>
+                  <h3 className="font-bold text-sm">Install Tipid</h3>
                   <button
                     onClick={handleDismiss}
                     className="p-1 rounded-full hover:bg-muted transition-colors"
@@ -107,31 +107,31 @@ export default function InstallPrompt() {
                       1
                     </span>
                     <span>
-                      I-tap ang{" "}
+                      Tap the{" "}
                       <span className="inline-flex items-center px-1 py-0.5 bg-muted rounded text-[10px]">
                         ⬆ Share
                       </span>{" "}
-                      button sa Safari
+                      button in Safari
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">
                       2
                     </span>
-                    <span>Scroll down at i-tap ang "Add to Home Screen"</span>
+                    <span>Scroll down and tap "Add to Home Screen"</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-5 h-5 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold shrink-0">
                       3
                     </span>
-                    <span>I-tap ang "Add" — tapos na!</span>
+                    <span>Tap "Add" — you're all set!</span>
                   </div>
                 </div>
                 <button
                   onClick={handleDismiss}
                   className="w-full text-xs text-muted-foreground py-1.5 hover:text-foreground transition-colors"
                 >
-                  Sige, gets ko na
+                  Got it, thanks!
                 </button>
               </div>
             ) : (
@@ -141,9 +141,9 @@ export default function InstallPrompt() {
                   <Smartphone className="w-5 h-5 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-sm">I-install ang Tipid</h3>
+                  <h3 className="font-bold text-sm">Install Tipid</h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Gamitin offline, mas mabilis, parang native app!
+                    Use it offline, faster loading, just like a native app!
                   </p>
                   <div className="flex items-center gap-2 mt-2.5">
                     <button
@@ -157,7 +157,7 @@ export default function InstallPrompt() {
                       onClick={handleDismiss}
                       className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      Mamaya na
+                      Maybe later
                     </button>
                   </div>
                 </div>

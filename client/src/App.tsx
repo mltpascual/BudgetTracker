@@ -1,11 +1,14 @@
 import { useEffect, lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useRoute } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import AppLayout from "./components/AppLayout";
 import InstallPrompt from "./components/InstallPrompt";
+import OnboardingWalkthrough from "./components/OnboardingWalkthrough";
+import DashboardSkeleton from "./components/skeletons/DashboardSkeleton";
+import HistorySkeleton from "./components/skeletons/HistorySkeleton";
 import { useTipidStore } from "@/lib/store";
 
 /* ── Lazy-loaded pages ── */
@@ -24,13 +27,23 @@ const Analytics = lazy(() => import("./pages/app/Analytics"));
 const TransferPage = lazy(() => import("./pages/app/TransferPage"));
 const MonthlySummary = lazy(() => import("./pages/app/MonthlySummary"));
 
-/* ── Minimal loading spinner ── */
+/* ── Generic loading spinner for non-skeleton pages ── */
 function PageLoader() {
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
     </div>
   );
+}
+
+/* ── Route-aware skeleton picker ── */
+function AppSkeleton() {
+  const [isDashboard] = useRoute("/app");
+  const [isHistory] = useRoute("/app/history");
+
+  if (isDashboard) return <DashboardSkeleton />;
+  if (isHistory) return <HistorySkeleton />;
+  return <PageLoader />;
 }
 
 function AppRoutes() {
@@ -41,7 +54,7 @@ function AppRoutes() {
 
   return (
     <AppLayout>
-      <Suspense fallback={<PageLoader />}>
+      <Suspense fallback={<AppSkeleton />}>
         <Switch>
           <Route path="/app" component={Dashboard} />
           <Route path="/app/add" component={AddTransaction} />
@@ -84,6 +97,7 @@ function App() {
           <Toaster position="top-center" />
           <Router />
           <InstallPrompt />
+          <OnboardingWalkthrough />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>

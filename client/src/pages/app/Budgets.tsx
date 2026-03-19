@@ -146,13 +146,13 @@ export default function Budgets() {
           onClick={() => setShowForm(false)}
         >
           <motion.div
-            className="bg-card w-full max-w-[430px] rounded-t-3xl p-6 pb-10 max-h-[85vh] overflow-y-auto"
+            className="bg-card w-full max-w-[430px] rounded-t-3xl max-h-[85vh] flex flex-col"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             transition={{ type: "spring", damping: 25 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center justify-between p-6 pb-3">
               <h2 className="text-lg font-bold font-display">
                 {editId ? "Edit Budget" : "New Budget"}
               </h2>
@@ -160,36 +160,40 @@ export default function Budgets() {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-semibold font-body mb-2 block">Category</label>
-                <div className="grid grid-cols-4 gap-2">
-                  {expenseCategories.map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => setForm({ ...form, categoryId: cat.id })}
-                      className={`flex flex-col items-center gap-1 p-2.5 rounded-xl transition-all active:scale-95 ${
-                        form.categoryId === cat.id
-                          ? "bg-primary/15 border-2 border-primary"
-                          : "bg-background border border-border"
-                      }`}
-                    >
-                      <CategoryIcon categoryId={cat.id} iconName={cat.icon} color={cat.color} size="sm" />
-                      <span className="text-[9px] font-body truncate w-full text-center">{cat.name}</span>
-                    </button>
-                  ))}
+            <div className="flex-1 overflow-y-auto px-6 pb-4">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-semibold font-body mb-2 block">Category</label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {expenseCategories.map((cat) => (
+                      <button
+                        key={cat.id}
+                        onClick={() => setForm({ ...form, categoryId: cat.id })}
+                        className={`flex flex-col items-center gap-1 p-2.5 rounded-xl transition-all active:scale-95 ${
+                          form.categoryId === cat.id
+                            ? "bg-primary/15 border-2 border-primary"
+                            : "bg-background border border-border"
+                        }`}
+                      >
+                        <CategoryIcon categoryId={cat.id} iconName={cat.icon} color={cat.color} size="sm" />
+                        <span className="text-[9px] font-body truncate w-full text-center">{cat.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-semibold font-body mb-1 block">Monthly Limit</label>
+                  <input
+                    type="number"
+                    value={form.limit}
+                    onChange={(e) => setForm({ ...form, limit: e.target.value })}
+                    placeholder="e.g. 5000"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-body"
+                  />
                 </div>
               </div>
-              <div>
-                <label className="text-sm font-semibold font-body mb-1 block">Monthly Limit</label>
-                <input
-                  type="number"
-                  value={form.limit}
-                  onChange={(e) => setForm({ ...form, limit: e.target.value })}
-                  placeholder="e.g. 5000"
-                  className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-body"
-                />
-              </div>
+            </div>
+            <div className="p-6 pt-3 border-t border-border bg-card">
               <button
                 onClick={handleSave}
                 className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-bold font-display flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"

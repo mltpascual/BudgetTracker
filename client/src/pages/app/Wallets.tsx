@@ -154,13 +154,13 @@ export default function Wallets() {
           onClick={() => setShowForm(false)}
         >
           <motion.div
-            className="bg-card w-full max-w-[430px] rounded-t-3xl p-6 pb-10 max-h-[85vh] overflow-y-auto"
+            className="bg-card w-full max-w-[430px] rounded-t-3xl max-h-[85vh] flex flex-col"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             transition={{ type: "spring", damping: 25 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center justify-between p-6 pb-3">
               <h2 className="text-lg font-bold font-display">
                 {editId ? "Edit Account" : "New Account"}
               </h2>
@@ -169,50 +169,55 @@ export default function Wallets() {
               </button>
             </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-semibold font-body mb-1 block">Name</label>
-                <input
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="e.g. BDO Savings"
-                  className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-body"
-                />
-              </div>
+            <div className="flex-1 overflow-y-auto px-6 pb-4">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-semibold font-body mb-1 block">Name</label>
+                  <input
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    placeholder="e.g. BDO Savings"
+                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-body"
+                  />
+                </div>
 
-              <div>
-                <label className="text-sm font-semibold font-body mb-1 block">Type</label>
-                <div className="grid grid-cols-4 gap-2">
-                  {(["cash", "bank", "ewallet", "credit"] as AccountType[]).map((t) => {
-                    const config = ACCOUNT_TYPE_CONFIG[t];
-                    return (
-                      <button
-                        key={t}
-                        onClick={() => setForm({ ...form, type: t })}
-                        className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all ${
-                          form.type === t
-                            ? "bg-primary/15 border-2 border-primary"
-                            : "bg-background border border-border"
-                        }`}
-                      >
-                        <AccountTypeIcon type={t} size="md" />
-                        <span className="text-[10px] font-semibold font-body">{config.label}</span>
-                      </button>
-                    );
-                  })}
+                <div>
+                  <label className="text-sm font-semibold font-body mb-1 block">Type</label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {(["cash", "bank", "ewallet", "credit"] as AccountType[]).map((t) => {
+                      const config = ACCOUNT_TYPE_CONFIG[t];
+                      return (
+                        <button
+                          key={t}
+                          onClick={() => setForm({ ...form, type: t })}
+                          className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all ${
+                            form.type === t
+                              ? "bg-primary/15 border-2 border-primary"
+                              : "bg-background border border-border"
+                          }`}
+                        >
+                          <AccountTypeIcon type={t} size="md" />
+                          <span className="text-[10px] font-semibold font-body">{config.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-sm font-semibold font-body mb-1 block">Initial Balance</label>
+                  <input
+                    type="number"
+                    value={form.balance}
+                    onChange={(e) => setForm({ ...form, balance: e.target.value })}
+                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-body"
+                  />
                 </div>
               </div>
+            </div>
 
-              <div>
-                <label className="text-sm font-semibold font-body mb-1 block">Initial Balance</label>
-                <input
-                  type="number"
-                  value={form.balance}
-                  onChange={(e) => setForm({ ...form, balance: e.target.value })}
-                  className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-body"
-                />
-              </div>
-
+            {/* Sticky save button - always visible */}
+            <div className="p-6 pt-3 border-t border-border bg-card rounded-b-none">
               <button
                 onClick={handleSave}
                 className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-bold font-display flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"

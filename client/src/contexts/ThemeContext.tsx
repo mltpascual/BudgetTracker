@@ -50,7 +50,7 @@ export function ThemeProvider({
 
   const [colorTheme, setColorThemeState] = useState<ColorTheme>(() => {
     const stored = localStorage.getItem("colorTheme") as ColorTheme | null;
-    return stored || "green";
+    return stored || "teal";
   });
 
   const resolvedTheme = theme === "system" ? getSystemTheme() : theme;
@@ -75,8 +75,8 @@ export function ThemeProvider({
     COLOR_THEMES.forEach((t) => {
       root.classList.remove(`theme-${t.id}`);
     });
-    // Add current theme class (green is default/root, no class needed)
-    if (colorTheme !== "green") {
+    // Add current theme class (teal is default/root, no class needed)
+    if (colorTheme !== "teal") {
       root.classList.add(`theme-${colorTheme}`);
     }
     localStorage.setItem("colorTheme", colorTheme);

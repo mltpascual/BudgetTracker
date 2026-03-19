@@ -62,6 +62,7 @@ const TIPS_FIL = [
 type WidgetId =
   | "tip-bubble"
   | "balance"
+  | "budget-progress"
   | "quick-links"
   | "quick-templates"
   | "insights"
@@ -76,6 +77,7 @@ interface WidgetConfig {
 const DEFAULT_WIDGETS: WidgetConfig[] = [
   { id: "tip-bubble", visible: true },
   { id: "balance", visible: true },
+  { id: "budget-progress", visible: true },
   { id: "quick-links", visible: true },
   { id: "quick-templates", visible: true },
   { id: "insights", visible: true },
@@ -114,6 +116,7 @@ function getWidgetLabel(
   const map: Record<WidgetId, string> = {
     "tip-bubble": t("widgetsTipBubble"),
     balance: t("widgetsBalance"),
+    "budget-progress": lang === "fil" ? "Budget Progress" : "Budget Progress",
     "quick-links": t("widgetsQuickLinks"),
     "quick-templates": lang === "fil" ? "Mabilisang Gastos" : "Quick Add",
     insights: t("widgetsInsights"),
@@ -319,6 +322,136 @@ export default function Dashboard() {
             </div>
           </motion.div>
         );
+
+      /* ── Budget Progress Bar ────────────────────────────────────── */
+      case "budget-progress": {
+        if (budgets.length === 0) {
+          return (
+            <motion.div
+              className="bg-card rounded-2xl p-4 border border-border/50"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.22 }}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-sm font-bold font-display flex items-center gap-1.5">
+                  <Target className="w-4 h-4 text-primary" />
+                  {lang === "fil" ? "Monthly Budget" : "Monthly Budget"}
+                </h2>
+                <Link href="/app/budgets">
+                  <span className="text-[10px] text-primary font-semibold flex items-center gap-0.5">
+                    {lang === "fil" ? "Mag-set" : "Set Up"} <ChevronRight className="w-3 h-3" />
+                  </span>
+                </Link>
+              </div>
+              <p className="text-xs text-muted-foreground font-body">
+                {lang === "fil"
+                  ? "Wala ka pang budget. Mag-set ng monthly budget para ma-track ang spending mo."
+                  : "No budgets set yet. Set up monthly budgets to track your spending."}
+              </p>
+            </motion.div>
+          );
+        }
+
+        const totalBudgetLimit = budgets.reduce((sum, b) => sum + b.limit, 0);
+        const totalBudgetSpent = budgets.reduce((sum, b) => {
+          const catSpent = monthTransactions
+            .filter((tx) => tx.type === "expense" && tx.categoryId === b.categoryId)
+            .reduce((s, tx) => s + tx.amount, 0);
+          return sum + catSpent;
+        }, 0);
+        const budgetPercent = totalBudgetLimit > 0 ? Math.min((totalBudgetSpent / totalBudgetLimit) * 100, 100) : 0;
+        const budgetRemaining = totalBudgetLimit - totalBudgetSpent;
+        const isOverBudget = budgetRemaining < 0;
+        const isWarning = budgetPercent >= 80 && !isOverBudget;
+
+        return (
+          <motion.div
+            className="bg-card rounded-2xl p-4 border border-border/50"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.22 }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-bold font-display flex items-center gap-1.5">
+                <Target className="w-4 h-4 text-primary" />
+                {lang === "fil" ? "Monthly Budget" : "Monthly Budget"}
+              </h2>
+              <Link href="/app/budgets">
+                <span className="text-[10px] text-primary font-semibold flex items-center gap-0.5">
+                  {lang === "fil" ? "Tingnan" : "Details"} <ChevronRight className="w-3 h-3" />
+                </span>
+              </Link>
+            </div>
+
+            {/* Progress bar */}
+            <div className="relative h-3 rounded-full bg-accent overflow-hidden mb-2.5">
+              <motion.div
+                className={`absolute inset-y-0 left-0 rounded-full ${
+                  isOverBudget
+                    ? "bg-destructive"
+                    : isWarning
+                      ? "bg-amber-500"
+                      : "bg-primary"
+                }`}
+                initial={{ width: 0 }}
+                animate={{ width: `${budgetPercent}%` }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+              />
+            </div>
+
+            {/* Stats row */}
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs text-muted-foreground font-body">
+                  {lang === "fil" ? "Na-gastos" : "Spent"}
+                </p>
+                <p className={`text-sm font-bold font-body tabular-nums ${
+                  isOverBudget ? "text-destructive" : isWarning ? "text-amber-600 dark:text-amber-400" : "text-foreground"
+                }`}>
+                  {formatCurrency(totalBudgetSpent, currency)}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground font-body">
+                  {isOverBudget
+                    ? lang === "fil" ? "Sobra" : "Over"
+                    : lang === "fil" ? "Natitira" : "Remaining"}
+                </p>
+                <p className={`text-sm font-bold font-body tabular-nums ${
+                  isOverBudget ? "text-destructive" : "text-foreground"
+                }`}>
+                  {isOverBudget ? "-" : ""}{formatCurrency(Math.abs(budgetRemaining), currency)}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-muted-foreground font-body">
+                  {lang === "fil" ? "Budget" : "Budget"}
+                </p>
+                <p className="text-sm font-bold font-body tabular-nums">
+                  {formatCurrency(totalBudgetLimit, currency)}
+                </p>
+              </div>
+            </div>
+
+            {/* Warning text */}
+            {isOverBudget && (
+              <p className="text-[10px] text-destructive font-semibold font-body mt-2 flex items-center gap-1">
+                {lang === "fil"
+                  ? "Lagpas ka na sa budget mo ngayong buwan!"
+                  : "You've exceeded your budget this month!"}
+              </p>
+            )}
+            {isWarning && (
+              <p className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold font-body mt-2">
+                {lang === "fil"
+                  ? `${Math.round(budgetPercent)}% na ng budget mo ang nagastos na.`
+                  : `${Math.round(budgetPercent)}% of your budget has been used.`}
+              </p>
+            )}
+          </motion.div>
+        );
+      }
 
       /* ── Quick Links — Compact 4-col grid ───────────────────────── */
       case "quick-links":

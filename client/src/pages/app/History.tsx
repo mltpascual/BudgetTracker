@@ -2,7 +2,7 @@
  * TIPID — History Page
  * Calendar-based monthly transaction history view with search & filter.
  */
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTipidStore, formatCurrency, type Transaction } from "@/lib/store";
 import CategoryIcon from "@/components/CategoryIcon";
 import EditTransactionDialog from "@/components/EditTransactionDialog";
@@ -43,6 +43,24 @@ export default function History() {
   );
   const [filterCategoryId, setFilterCategoryId] = useState<string>("all");
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+
+  // One-time swipe tutorial hint
+  const [showSwipeHint, setShowSwipeHint] = useState(() => {
+    return !localStorage.getItem("tipid-swipe-hint-seen");
+  });
+
+  const dismissSwipeHint = () => {
+    setShowSwipeHint(false);
+    localStorage.setItem("tipid-swipe-hint-seen", "1");
+  };
+
+  // Auto-dismiss after 8 seconds once a date with transactions is selected
+  useEffect(() => {
+    if (showSwipeHint && selectedDate) {
+      const timer = setTimeout(dismissSwipeHint, 8000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSwipeHint, selectedDate]);
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -382,6 +400,46 @@ export default function History() {
           <h3 className="text-sm font-bold font-display mb-3">
             {format(selectedDate, "MMMM d, yyyy")}
           </h3>
+          {/* Swipe tutorial hint */}
+          <AnimatePresence>
+            {showSwipeHint && selectedTransactions.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-3 overflow-hidden"
+              >
+                <div className="bg-primary/10 dark:bg-primary/20 rounded-xl px-3.5 py-2.5 flex items-center gap-3 border border-primary/15">
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <span className="text-base">👈</span>
+                    <span className="text-[10px] text-primary font-bold font-body">
+                      {lang === "fil" ? "Delete" : "Delete"}
+                    </span>
+                  </div>
+                  <div className="flex-1 text-center">
+                    <p className="text-[11px] text-foreground/80 font-semibold font-body">
+                      {lang === "fil"
+                        ? "I-swipe ang transaction para mag-edit o mag-delete"
+                        : "Swipe transactions to edit or delete"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                    <span className="text-[10px] text-primary font-bold font-body">
+                      {lang === "fil" ? "Edit" : "Edit"}
+                    </span>
+                    <span className="text-base">👉</span>
+                  </div>
+                  <button
+                    onClick={dismissSwipeHint}
+                    className="p-1 rounded-full hover:bg-primary/10 text-muted-foreground ml-1 flex-shrink-0"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           {selectedTransactions.length === 0 ? (
             <p className="text-sm text-muted-foreground font-body text-center py-6">
               {lang === "fil"

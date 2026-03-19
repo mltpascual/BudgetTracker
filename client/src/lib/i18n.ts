@@ -230,6 +230,33 @@ const en = {
   insightsNoExpenses: "No expenses this month yet. Keep it up!",
   insightsDailyAvg: "Your daily average spending is {amt}.",
 
+  // ── Quick Templates ──
+  templatesTitle: "Quick Add Templates",
+  templatesAdd: "Add Template",
+  templatesName: "Template Name",
+  templatesNamePlaceholder: "e.g. Grab to Work, Coffee",
+  templatesNoTemplates: "No templates yet. Create one for quick logging!",
+  templatesManage: "Manage Templates",
+  templatesLogged: "Logged",
+  templatesSaveAsTemplate: "Save as Template",
+
+  // ── Monthly Summary ──
+  summaryTitle: "Monthly Summary",
+  summaryDesc: "Share or screenshot this report",
+  summaryIncome: "Income",
+  summaryExpenses: "Expenses",
+  summaryNetBalance: "Net Balance",
+  summaryTopExpenses: "Top Expenses",
+  summaryBudgetStatus: "Budget Status",
+  summaryExport: "Export Report",
+  summaryTransactions: "transactions",
+  summaryAvgDay: "Avg/day",
+
+  // ── Edit Transaction ──
+  editTransactionTitle: "Edit Transaction",
+  editTransactionSave: "Save Changes",
+  editTransactionDelete: "Delete Transaction",
+
   // ── Widgets ──
   widgetsCustomize: "Customize Dashboard",
   widgetsDone: "Done",
@@ -469,6 +496,33 @@ const fil: TranslationKeys = {
   insightsOnTrack: "On track ka! Nasa loob ng budget ang gastos mo.",
   insightsNoExpenses: "Wala pang gastos ngayong buwan. Keep it up!",
   insightsDailyAvg: "Ang average daily spending mo ay {amt}.",
+
+  // ── Quick Templates ──
+  templatesTitle: "Mabilisang Gastos",
+  templatesAdd: "Mag-Add ng Template",
+  templatesName: "Pangalan ng Template",
+  templatesNamePlaceholder: "e.g. Grab Papasok, Kape",
+  templatesNoTemplates: "Wala pang templates. Gumawa para sa mabilisang pag-log!",
+  templatesManage: "I-Manage ang Templates",
+  templatesLogged: "Na-log na",
+  templatesSaveAsTemplate: "I-Save bilang Template",
+
+  // ── Monthly Summary ──
+  summaryTitle: "Buod ng Buwan",
+  summaryDesc: "I-share o i-screenshot ang report",
+  summaryIncome: "Kita",
+  summaryExpenses: "Gastos",
+  summaryNetBalance: "Net Balance",
+  summaryTopExpenses: "Mga Top na Gastos",
+  summaryBudgetStatus: "Status ng Budget",
+  summaryExport: "I-Export ang Report",
+  summaryTransactions: "na transactions",
+  summaryAvgDay: "Avg/araw",
+
+  // ── Edit Transaction ──
+  editTransactionTitle: "I-Edit ang Transaction",
+  editTransactionSave: "I-Save ang Changes",
+  editTransactionDelete: "I-Delete ang Transaction",
 
   // ── Widgets ──
   widgetsCustomize: "I-Customize Dashboard",

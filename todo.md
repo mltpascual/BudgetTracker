@@ -1,26 +1,24 @@
-# Tipid v1.2 — Todo
+# Tipid v1.5 — Todo
 
-## 1. Replace Emoji Icons with Lucide SVG Icons
-- [ ] Create a category icon mapping component using Lucide React icons
-- [ ] Assign distinct colors per category (orange for food, blue for transport, pink for shopping, etc.)
-- [ ] Replace emoji icons in store default categories
-- [ ] Update all pages that render category icons: Dashboard, AddTransaction, History, Recurring, Analytics, Budgets
+## 1. Edit Transaction
+- [ ] Add `updateTransaction` action to store
+- [ ] Create EditTransaction dialog component
+- [ ] Add edit button/tap handler to History page transaction items
+- [ ] Add edit button/tap handler to Dashboard recent transactions
 
-## 2. Export to CSV/JSON
-- [ ] Add export section in Settings page
-- [ ] Implement JSON export (full data backup)
-- [ ] Implement CSV export (transaction history)
-- [ ] Add download trigger using Blob + URL.createObjectURL
+## 2. Monthly Summary Report
+- [ ] Create MonthlySummary page/component
+- [ ] Show total income, expense, net balance
+- [ ] Show top spending categories with amounts
+- [ ] Show budget status per category
+- [ ] Add "share/screenshot" styled card layout
+- [ ] Add route and navigation link
 
-## 3. Category Customization
-- [ ] Add "Manage Categories" section in Settings
-- [ ] Build add category form with name, icon picker, color picker
-- [ ] Build edit category flow
-- [ ] Build delete category with safety check (no transactions using it)
-- [ ] Update store with addCategory, updateCategory, deleteCategory actions
+## 3. Quick Add Templates
+- [ ] Add `templates` array to store with CRUD actions
+- [ ] Create template management UI in Settings
+- [ ] Add quick-add template buttons on Dashboard
+- [ ] One-tap logging from template
 
-## 4. Onboarding Walkthrough
-- [ ] Create onboarding state in store (hasCompletedOnboarding)
-- [ ] Build multi-step walkthrough overlay component
-- [ ] Design 4-5 steps with kalabaw mascot guiding user
-- [ ] Auto-show on first visit, skip option, manual trigger from Settings
+## 4. i18n
+- [ ] Add all new translation keys for en and fil

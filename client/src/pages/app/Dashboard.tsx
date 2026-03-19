@@ -4,7 +4,7 @@
  * quick links, spending insights, recent transactions, and stats summary.
  * Widget order and visibility are persisted in localStorage.
  */
-import { useTipidStore, formatCurrency } from "@/lib/store";
+import { useTipidStore, formatCurrency, type QuickTemplate } from "@/lib/store";
 import CategoryIcon from "@/components/CategoryIcon";
 import SpendingInsights from "@/components/SpendingInsights";
 import { Link } from "wouter";
@@ -24,10 +24,14 @@ import {
   Eye,
   EyeOff,
   RotateCcw,
+  Zap,
+  FileText,
+  Plus,
 } from "lucide-react";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Onboarding from "@/components/Onboarding";
 import { useLanguage } from "@/lib/i18n";
+import { toast } from "sonner";
 
 const MASCOT_HAPPY =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-happy-MhYqoPSPsRvFcB3CkzXrzP.webp";
@@ -57,6 +61,7 @@ type WidgetId =
   | "tip-bubble"
   | "balance"
   | "quick-links"
+  | "quick-templates"
   | "insights"
   | "recent"
   | "stats";
@@ -70,6 +75,7 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
   { id: "tip-bubble", visible: true },
   { id: "balance", visible: true },
   { id: "quick-links", visible: true },
+  { id: "quick-templates", visible: true },
   { id: "insights", visible: true },
   { id: "recent", visible: true },
   { id: "stats", visible: true },
@@ -101,12 +107,14 @@ function saveWidgets(widgets: WidgetConfig[]) {
 // ─── Widget Label Map ──────────────────────────────────────────────
 function getWidgetLabel(
   id: WidgetId,
-  t: (key: any) => string
+  t: (key: any) => string,
+  lang: string
 ): string {
   const map: Record<WidgetId, string> = {
     "tip-bubble": t("widgetsTipBubble"),
     balance: t("widgetsBalance"),
     "quick-links": t("widgetsQuickLinks"),
+    "quick-templates": lang === "fil" ? "Mabilisang Gastos" : "Quick Add",
     insights: t("widgetsInsights"),
     recent: t("widgetsRecent"),
     stats: t("widgetsStats"),
@@ -122,7 +130,9 @@ export default function Dashboard() {
     goals,
     debts,
     categories,
+    templates,
     settings,
+    useTemplate,
   } = useTipidStore();
   const [showOnboarding, setShowOnboarding] = useState(!settings.hasOnboarded);
   const [isCustomizing, setIsCustomizing] = useState(false);
@@ -214,6 +224,13 @@ export default function Dashboard() {
       href: "/app/transfer",
       color:
         "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+    },
+    {
+      label: lang === "fil" ? "Buod" : "Summary",
+      icon: FileText,
+      href: "/app/summary",
+      color:
+        "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
     },
   ];
 
@@ -406,6 +423,60 @@ export default function Dashboard() {
           </motion.div>
         );
 
+      case "quick-templates":
+        if (templates.length === 0) return null;
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28 }}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-base font-bold font-display flex items-center gap-1.5">
+                <Zap className="w-4 h-4 text-amber-500" />
+                {lang === "fil" ? "Mabilisang Gastos" : "Quick Add"}
+              </h2>
+              <Link href="/app/settings">
+                <span className="text-xs text-primary font-semibold flex items-center gap-0.5">
+                  {lang === "fil" ? "I-manage" : "Manage"} <ChevronRight className="w-3 h-3" />
+                </span>
+              </Link>
+            </div>
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+              {templates.map((tmpl) => {
+                const cat = categories.find((c) => c.id === tmpl.categoryId);
+                return (
+                  <button
+                    key={tmpl.id}
+                    onClick={() => {
+                      useTemplate(tmpl.id);
+                      toast.success(
+                        lang === "fil"
+                          ? `Na-log na: ${tmpl.name}`
+                          : `Logged: ${tmpl.name}`
+                      );
+                    }}
+                    className="flex-shrink-0 bg-card rounded-xl border border-border/50 p-3 flex flex-col items-center gap-1.5 min-w-[80px] hover:border-primary/30 active:scale-95 transition-all"
+                  >
+                    <CategoryIcon
+                      categoryId={tmpl.categoryId}
+                      iconName={cat?.icon}
+                      color={cat?.color}
+                      size="sm"
+                    />
+                    <span className="text-[10px] font-semibold font-body truncate w-full text-center">
+                      {tmpl.name}
+                    </span>
+                    <span className="text-[10px] tabular-nums font-body text-muted-foreground">
+                      {formatCurrency(tmpl.amount, tmpl.currency)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        );
+
       case "stats":
         if (activeGoals === 0 && activeDebts === 0) return null;
         return (
@@ -544,7 +615,7 @@ export default function Dashboard() {
                           : "text-muted-foreground line-through"
                       }`}
                     >
-                      {getWidgetLabel(widget.id, t)}
+                      {getWidgetLabel(widget.id, t, lang)}
                     </span>
                     <button
                       onClick={() => toggleWidget(widget.id)}

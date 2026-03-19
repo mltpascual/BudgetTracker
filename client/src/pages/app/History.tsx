@@ -3,13 +3,14 @@
  * Calendar-based monthly transaction history view with search & filter.
  */
 import { useState, useMemo } from "react";
-import { useTipidStore, formatCurrency } from "@/lib/store";
+import { useTipidStore, formatCurrency, type Transaction } from "@/lib/store";
 import CategoryIcon from "@/components/CategoryIcon";
+import EditTransactionDialog from "@/components/EditTransactionDialog";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronLeft,
   ChevronRight,
-  Trash2,
+  Pencil,
   Search,
   SlidersHorizontal,
   X,
@@ -41,6 +42,7 @@ export default function History() {
     "all"
   );
   const [filterCategoryId, setFilterCategoryId] = useState<string>("all");
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -104,10 +106,7 @@ export default function History() {
     .filter((t) => t.type === "expense")
     .reduce((s, t) => s + t.amount, 0);
 
-  const handleDelete = (id: string) => {
-    deleteTransaction(id);
-    toast.success(lang === "fil" ? "Na-delete na ang transaction" : "Transaction deleted");
-  };
+
 
   const hasActiveFilters =
     filterType !== "all" || filterCategoryId !== "all" || searchQuery.trim() !== "";
@@ -423,10 +422,10 @@ export default function History() {
                       {formatCurrency(tx.amount, tx.currency)}
                     </p>
                     <button
-                      onClick={() => handleDelete(tx.id)}
-                      className="p-1.5 rounded-lg hover:bg-destructive/10"
+                      onClick={() => setEditingTransaction(tx)}
+                      className="p-1.5 rounded-lg hover:bg-primary/10"
                     >
-                      <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                      <Pencil className="w-3.5 h-3.5 text-primary" />
                     </button>
                   </div>
                 );
@@ -490,10 +489,10 @@ export default function History() {
                         {formatCurrency(tx.amount, tx.currency)}
                       </p>
                       <button
-                        onClick={() => handleDelete(tx.id)}
-                        className="p-1.5 rounded-lg hover:bg-destructive/10"
+                        onClick={() => setEditingTransaction(tx)}
+                        className="p-1.5 rounded-lg hover:bg-primary/10"
                       >
-                        <Trash2 className="w-3.5 h-3.5 text-destructive" />
+                        <Pencil className="w-3.5 h-3.5 text-primary" />
                       </button>
                     </div>
                   );
@@ -501,6 +500,14 @@ export default function History() {
             </div>
           )}
         </motion.div>
+      )}
+
+      {/* Edit Transaction Dialog */}
+      {editingTransaction && (
+        <EditTransactionDialog
+          transaction={editingTransaction}
+          onClose={() => setEditingTransaction(null)}
+        />
       )}
     </div>
   );

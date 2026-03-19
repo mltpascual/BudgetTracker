@@ -91,6 +91,17 @@ export interface Transfer {
   currency: string;
 }
 
+export interface QuickTemplate {
+  id: string;
+  name: string;
+  amount: number;
+  type: TransactionType;
+  categoryId: string;
+  accountId: string;
+  note: string;
+  currency: string;
+}
+
 export interface UserSettings {
   name: string;
   currency: string;
@@ -146,6 +157,7 @@ interface TipidStore {
   debts: Debt[];
   recurringEntries: RecurringEntry[];
   transfers: Transfer[];
+  templates: QuickTemplate[];
   settings: UserSettings;
 
   // Transaction actions
@@ -187,6 +199,12 @@ interface TipidStore {
   addTransfer: (t: Omit<Transfer, "id">) => void;
   deleteTransfer: (id: string) => void;
 
+  // Template actions
+  addTemplate: (t: Omit<QuickTemplate, "id">) => void;
+  updateTemplate: (id: string, t: Partial<QuickTemplate>) => void;
+  deleteTemplate: (id: string) => void;
+  useTemplate: (templateId: string) => void;
+
   // Recurring processing
   processRecurring: () => void;
 
@@ -211,6 +229,7 @@ export const useTipidStore = create<TipidStore>()(
       debts: [],
       recurringEntries: [],
       transfers: [],
+      templates: [],
       settings: DEFAULT_SETTINGS,
 
       // ── Transactions ──
@@ -354,6 +373,30 @@ export const useTipidStore = create<TipidStore>()(
           return { transfers: s.transfers.filter((x) => x.id !== id), accounts };
         }),
 
+      // ── Templates ──
+      addTemplate: (t) =>
+        set((s) => ({ templates: [...s.templates, { ...t, id: generateId() }] })),
+      updateTemplate: (id, t) =>
+        set((s) => ({
+          templates: s.templates.map((x) => (x.id === id ? { ...x, ...t } : x)),
+        })),
+      deleteTemplate: (id) =>
+        set((s) => ({ templates: s.templates.filter((x) => x.id !== id) })),
+      useTemplate: (templateId) => {
+        const state = get();
+        const tmpl = state.templates.find((t) => t.id === templateId);
+        if (!tmpl) return;
+        state.addTransaction({
+          amount: tmpl.amount,
+          type: tmpl.type,
+          categoryId: tmpl.categoryId,
+          accountId: tmpl.accountId,
+          date: new Date().toISOString(),
+          note: tmpl.note,
+          currency: tmpl.currency,
+        });
+      },
+
       // ── Process Recurring ──
       processRecurring: () => {
         const state = get();
@@ -428,6 +471,7 @@ export const useTipidStore = create<TipidStore>()(
             debts: data.debts || [],
             recurringEntries: data.recurringEntries || [],
             transfers: data.transfers || [],
+            templates: data.templates || [],
             settings: data.settings || DEFAULT_SETTINGS,
           });
           return true;
@@ -447,6 +491,7 @@ export const useTipidStore = create<TipidStore>()(
           debts: [],
           recurringEntries: [],
           transfers: [],
+          templates: [],
           settings: DEFAULT_SETTINGS,
         });
       },

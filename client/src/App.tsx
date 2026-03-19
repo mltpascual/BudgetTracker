@@ -1,25 +1,36 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Landing from "./pages/Landing";
 import AppLayout from "./components/AppLayout";
-import Dashboard from "./pages/app/Dashboard";
-import AddTransaction from "./pages/app/AddTransaction";
-import Wallets from "./pages/app/Wallets";
-import History from "./pages/app/History";
-import Settings from "./pages/app/Settings";
-import Budgets from "./pages/app/Budgets";
-import Goals from "./pages/app/Goals";
-import Debts from "./pages/app/Debts";
-import Recurring from "./pages/app/Recurring";
-import Analytics from "./pages/app/Analytics";
-import TransferPage from "./pages/app/TransferPage";
-import MonthlySummary from "./pages/app/MonthlySummary";
 import { useTipidStore } from "@/lib/store";
+
+/* ── Lazy-loaded pages ── */
+const Landing = lazy(() => import("./pages/Landing"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Dashboard = lazy(() => import("./pages/app/Dashboard"));
+const AddTransaction = lazy(() => import("./pages/app/AddTransaction"));
+const Wallets = lazy(() => import("./pages/app/Wallets"));
+const History = lazy(() => import("./pages/app/History"));
+const Settings = lazy(() => import("./pages/app/Settings"));
+const Budgets = lazy(() => import("./pages/app/Budgets"));
+const Goals = lazy(() => import("./pages/app/Goals"));
+const Debts = lazy(() => import("./pages/app/Debts"));
+const Recurring = lazy(() => import("./pages/app/Recurring"));
+const Analytics = lazy(() => import("./pages/app/Analytics"));
+const TransferPage = lazy(() => import("./pages/app/TransferPage"));
+const MonthlySummary = lazy(() => import("./pages/app/MonthlySummary"));
+
+/* ── Minimal loading spinner ── */
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-8 h-8 border-3 border-primary/30 border-t-primary rounded-full animate-spin" />
+    </div>
+  );
+}
 
 function AppRoutes() {
   const processRecurring = useTipidStore((s) => s.processRecurring);
@@ -29,34 +40,38 @@ function AppRoutes() {
 
   return (
     <AppLayout>
-      <Switch>
-        <Route path="/app" component={Dashboard} />
-        <Route path="/app/add" component={AddTransaction} />
-        <Route path="/app/wallets" component={Wallets} />
-        <Route path="/app/history" component={History} />
-        <Route path="/app/settings" component={Settings} />
-        <Route path="/app/budgets" component={Budgets} />
-        <Route path="/app/goals" component={Goals} />
-        <Route path="/app/debts" component={Debts} />
-        <Route path="/app/recurring" component={Recurring} />
-        <Route path="/app/analytics" component={Analytics} />
-        <Route path="/app/transfer" component={TransferPage} />
-        <Route path="/app/summary" component={MonthlySummary} />
-        <Route component={NotFound} />
-      </Switch>
+      <Suspense fallback={<PageLoader />}>
+        <Switch>
+          <Route path="/app" component={Dashboard} />
+          <Route path="/app/add" component={AddTransaction} />
+          <Route path="/app/wallets" component={Wallets} />
+          <Route path="/app/history" component={History} />
+          <Route path="/app/settings" component={Settings} />
+          <Route path="/app/budgets" component={Budgets} />
+          <Route path="/app/goals" component={Goals} />
+          <Route path="/app/debts" component={Debts} />
+          <Route path="/app/recurring" component={Recurring} />
+          <Route path="/app/analytics" component={Analytics} />
+          <Route path="/app/transfer" component={TransferPage} />
+          <Route path="/app/summary" component={MonthlySummary} />
+          <Route component={NotFound} />
+        </Switch>
+      </Suspense>
     </AppLayout>
   );
 }
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Landing} />
-      <Route path="/app/:rest*" component={AppRoutes} />
-      <Route path="/app" component={AppRoutes} />
-      <Route path="/404" component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
+    <Suspense fallback={<PageLoader />}>
+      <Switch>
+        <Route path="/" component={Landing} />
+        <Route path="/app/:rest*" component={AppRoutes} />
+        <Route path="/app" component={AppRoutes} />
+        <Route path="/404" component={NotFound} />
+        <Route component={NotFound} />
+      </Switch>
+    </Suspense>
   );
 }
 

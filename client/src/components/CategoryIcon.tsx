@@ -122,11 +122,12 @@ interface CategoryIconProps {
   iconName?: string;
   /** Custom color override */
   color?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   className?: string;
 }
 
 const SIZE_MAP = {
+  xs: { container: "w-5 h-5 rounded", icon: "w-3 h-3" },
   sm: { container: "w-8 h-8 rounded-lg", icon: "w-4 h-4" },
   md: { container: "w-10 h-10 rounded-xl", icon: "w-5 h-5" },
   lg: { container: "w-12 h-12 rounded-xl", icon: "w-6 h-6" },

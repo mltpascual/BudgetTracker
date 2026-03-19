@@ -219,6 +219,29 @@ const en = {
   onboardingBackupDesc: "Export your data as JSON anytime. Your data stays on your device.",
   onboardingStart: "Let's Get Started!",
 
+  // ── Insights ──
+  insightsTitle: "Spending Insights",
+  insightsNoData: "Add more transactions to see insights.",
+  insightsSpentMore: "You spent {pct}% more on {cat} this month vs last month.",
+  insightsSpentLess: "You spent {pct}% less on {cat} this month. Nice!",
+  insightsTopCategory: "{cat} is your top expense at {amt}.",
+  insightsBudgetWarning: "You've used {pct}% of your {cat} budget.",
+  insightsOnTrack: "You're on track! Spending is within budget.",
+  insightsNoExpenses: "No expenses this month yet. Keep it up!",
+  insightsDailyAvg: "Your daily average spending is {amt}.",
+
+  // ── Widgets ──
+  widgetsCustomize: "Customize Dashboard",
+  widgetsDone: "Done",
+  widgetsReset: "Reset",
+  widgetsTipBubble: "Tip Bubble",
+  widgetsBalance: "Balance Card",
+  widgetsQuickLinks: "Quick Links",
+  widgetsInsights: "Spending Insights",
+  widgetsRecent: "Recent Transactions",
+  widgetsStats: "Stats Summary",
+  widgetsDragHint: "Toggle and reorder widgets",
+
   // ── Landing ──
   landingHero: "Budgeting Without The Stress",
   landingHeroDesc: "Track expenses, manage budgets, and save money — all from your phone. No sign-up needed.",
@@ -435,6 +458,29 @@ const fil: TranslationKeys = {
   onboardingBackup: "I-Backup ang Data Mo",
   onboardingBackupDesc: "I-export ang data mo bilang JSON anytime. Naka-save ang data mo sa device mo.",
   onboardingStart: "Tara Na!",
+
+  // ── Insights ──
+  insightsTitle: "Spending Insights",
+  insightsNoData: "Mag-add pa ng transactions para makita ang insights.",
+  insightsSpentMore: "Mas malaki ng {pct}% ang gastos mo sa {cat} ngayong buwan kumpara last month.",
+  insightsSpentLess: "Mas mababa ng {pct}% ang gastos mo sa {cat} ngayong buwan. Galing!",
+  insightsTopCategory: "{cat} ang pinaka-malaking gastos mo sa {amt}.",
+  insightsBudgetWarning: "Nagamit mo na ang {pct}% ng {cat} budget mo.",
+  insightsOnTrack: "On track ka! Nasa loob ng budget ang gastos mo.",
+  insightsNoExpenses: "Wala pang gastos ngayong buwan. Keep it up!",
+  insightsDailyAvg: "Ang average daily spending mo ay {amt}.",
+
+  // ── Widgets ──
+  widgetsCustomize: "I-Customize Dashboard",
+  widgetsDone: "Tapos Na",
+  widgetsReset: "I-Reset",
+  widgetsTipBubble: "Tip Bubble",
+  widgetsBalance: "Balance Card",
+  widgetsQuickLinks: "Quick Links",
+  widgetsInsights: "Spending Insights",
+  widgetsRecent: "Recent Transactions",
+  widgetsStats: "Stats Summary",
+  widgetsDragHint: "I-toggle at i-reorder ang widgets",
 
   // ── Landing ──
   landingHero: "Budgeting Nang Walang Stress",

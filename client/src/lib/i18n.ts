@@ -277,6 +277,8 @@ const en = {
   landingFeaturesDesc: "Everything you need to manage your money",
   landingCTA: "Start Budgeting Now",
   landingCTADesc: "Free. No sign-up. Your data stays on your device.",
+  landingAppPreview: "See It In Action",
+  landingAppPreviewDesc: "A sneak peek at what Tipid looks like on your phone.",
   landingFooter: "Made with care for Pinoy budgeters",
 };
 
@@ -544,6 +546,8 @@ const fil: TranslationKeys = {
   landingFeaturesDesc: "Lahat ng kailangan mo para i-manage ang pera mo",
   landingCTA: "Mag-Budget Na",
   landingCTADesc: "Libre. Walang sign-up. Naka-save ang data mo sa device mo.",
+  landingAppPreview: "Tignan Kung Paano Gumagana",
+  landingAppPreviewDesc: "Sneak peek kung ano ang itsura ng Tipid sa phone mo.",
   landingFooter: "Gawa nang may malasakit para sa Pinoy budgeters",
 };
 

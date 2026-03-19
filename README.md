@@ -1,8 +1,24 @@
 # Tipid — Budgeting Without The Stress
 
+![Tipid Budgeting App](./docs/tipid-poster.webp)
+
 Tipid ("thrifty" in Filipino) is a free, offline-first personal budget tracker Progressive Web App built for Filipino users. Track expenses, manage budgets, set savings goals, and analyze spending patterns — all from your phone, with no sign-up required. Your data never leaves your device.
 
 **Live App:** [tipidbudget.vercel.app](https://tipidbudget.vercel.app)
+
+## App Previews
+
+<div align="center">
+  <img src="./docs/mockups/preview-4phones.png" alt="Tipid App Previews" width="100%" />
+</div>
+
+### Screenshots
+
+| Dashboard | Wallets | Analytics | History |
+| :---: | :---: | :---: | :---: |
+| <img src="./docs/screenshots/dashboard-overview.PNG" width="200" alt="Dashboard" /> | <img src="./docs/screenshots/wallets-overview.PNG" width="200" alt="Wallets" /> | <img src="./docs/screenshots/analytics-insights.PNG" width="200" alt="Analytics" /> | <img src="./docs/screenshots/history-calendar-view.PNG" width="200" alt="History" /> |
+| **Savings Goals** | **Settings** | **Onboarding** | **Empty State** |
+| <img src="./docs/screenshots/goals-savings-targets.PNG" width="200" alt="Savings Goals" /> | <img src="./docs/screenshots/settings-preferences.PNG" width="200" alt="Settings" /> | <img src="./docs/screenshots/onboarding-welcome-modal.PNG" width="200" alt="Onboarding" /> | <img src="./docs/screenshots/dashboard-empty-state.PNG" width="200" alt="Empty State" /> |
 
 ## Key Features
 

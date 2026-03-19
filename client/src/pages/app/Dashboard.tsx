@@ -187,50 +187,36 @@ export default function Dashboard() {
       label: t("dashBudgets"),
       icon: Target,
       href: "/app/budgets",
-      color:
-        "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
     },
     {
       label: t("dashGoals"),
       icon: TrendingUp,
       href: "/app/goals",
-      color:
-        "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
     },
     {
       label: t("dashDebts"),
       icon: HandCoins,
       href: "/app/debts",
-      color:
-        "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
     },
     {
       label: t("dashRecurring"),
       icon: Repeat,
       href: "/app/recurring",
-      color:
-        "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
     },
     {
       label: t("dashAnalytics"),
       icon: BarChart3,
       href: "/app/analytics",
-      color:
-        "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400",
     },
     {
       label: t("dashTransfer"),
       icon: ArrowRightLeft,
       href: "/app/transfer",
-      color:
-        "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
     },
     {
       label: lang === "fil" ? "Buod" : "Summary",
       icon: FileText,
       href: "/app/summary",
-      color:
-        "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
     },
   ];
 
@@ -323,7 +309,7 @@ export default function Dashboard() {
             {quickLinks.map((link, i) => (
               <Link key={link.href} href={link.href}>
                 <motion.div
-                  className={`${link.color} rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-95 transition-transform`}
+                  className="bg-primary/10 text-primary rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-95 transition-transform"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.25 + i * 0.05 }}

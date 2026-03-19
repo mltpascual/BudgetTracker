@@ -1,7 +1,7 @@
 /**
  * TIPID — Dashboard
- * Home screen with customizable widgets: greeting, mascot tip, balance card,
- * quick links, spending insights, recent transactions, and stats summary.
+ * Design: "Lightweight & Airy" — primary color as accent, not flood.
+ * Compact quick links, refined balance card, subtle tip bubble.
  * Widget order and visibility are persisted in localStorage.
  */
 import { useTipidStore, formatCurrency, type QuickTemplate } from "@/lib/store";
@@ -27,6 +27,8 @@ import {
   Zap,
   FileText,
   Plus,
+  Wallet,
+  PiggyBank,
 } from "lucide-react";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import Onboarding from "@/components/Onboarding";
@@ -88,7 +90,6 @@ function loadWidgets(): WidgetConfig[] {
     const stored = localStorage.getItem(WIDGET_STORAGE_KEY);
     if (stored) {
       const parsed = JSON.parse(stored) as WidgetConfig[];
-      // Ensure all widget IDs exist (in case new widgets are added)
       const ids = new Set(parsed.map((w) => w.id));
       const merged = [...parsed];
       DEFAULT_WIDGETS.forEach((dw) => {
@@ -245,77 +246,96 @@ export default function Dashboard() {
   // ─── Widget Renderers ────────────────────────────────────────────
   const renderWidget = (widgetId: WidgetId) => {
     switch (widgetId) {
+      /* ── Tip Bubble ─────────────────────────────────────────────── */
       case "tip-bubble":
         return (
           <motion.div
-            className="bg-card rounded-2xl p-4 border border-border/50 shadow-sm flex items-start gap-3"
-            initial={{ opacity: 0, y: 10 }}
+            className="flex items-center gap-3 px-1"
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
           >
             <img
               src={MASCOT_COIN}
               alt="tip"
-              className="w-10 h-10 object-contain flex-shrink-0"
+              className="w-9 h-9 object-contain flex-shrink-0"
             />
-            <p className="text-sm text-muted-foreground font-body leading-relaxed">
-              {tip}
-            </p>
+            <div className="flex-1 bg-primary/8 dark:bg-primary/15 rounded-2xl rounded-bl-sm px-3.5 py-2.5 border border-primary/12 dark:border-primary/20">
+              <p className="text-xs text-foreground/80 font-body leading-relaxed">
+                {tip}
+              </p>
+            </div>
           </motion.div>
         );
 
+      /* ── Balance Card ───────────────────────────────────────────── */
       case "balance":
         return (
           <motion.div
-            className="bg-primary rounded-2xl p-5 text-primary-foreground shadow-lg shadow-primary/20"
+            className="relative overflow-hidden bg-primary rounded-2xl p-5 text-primary-foreground shadow-lg shadow-primary/20"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <p className="text-sm opacity-80 font-body">{t("dashBalance")}</p>
-            <p className="text-3xl font-extrabold font-display tabular-nums mt-1">
-              {formatCurrency(totalBalance, currency)}
-            </p>
-            <div className="flex gap-6 mt-4">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
-                  <ArrowDownRight className="w-4 h-4" />
+            {/* Decorative circles */}
+            <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-white/8" />
+            <div className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full bg-white/5" />
+
+            <div className="relative z-10">
+              <p className="text-xs opacity-75 font-body tracking-wide uppercase">
+                {t("dashBalance")}
+              </p>
+              <p className="text-3xl font-extrabold font-display tabular-nums mt-1">
+                {formatCurrency(totalBalance, currency)}
+              </p>
+              <div className="flex gap-6 mt-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center backdrop-blur-sm">
+                    <ArrowDownRight className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] opacity-60 font-body">
+                      {t("dashIncome")}
+                    </p>
+                    <p className="text-sm font-bold tabular-nums">
+                      {formatCurrency(totalIncome, currency)}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-[10px] opacity-70">{t("dashIncome")}</p>
-                  <p className="text-sm font-bold tabular-nums">
-                    {formatCurrency(totalIncome, currency)}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">
-                  <ArrowUpRight className="w-4 h-4" />
-                </div>
-                <div>
-                  <p className="text-[10px] opacity-70">{t("dashExpense")}</p>
-                  <p className="text-sm font-bold tabular-nums">
-                    {formatCurrency(totalExpense, currency)}
-                  </p>
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-white/15 flex items-center justify-center backdrop-blur-sm">
+                    <ArrowUpRight className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] opacity-60 font-body">
+                      {t("dashExpense")}
+                    </p>
+                    <p className="text-sm font-bold tabular-nums">
+                      {formatCurrency(totalExpense, currency)}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </motion.div>
         );
 
+      /* ── Quick Links — Compact 4-col grid ───────────────────────── */
       case "quick-links":
         return (
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {quickLinks.map((link, i) => (
               <Link key={link.href} href={link.href}>
                 <motion.div
-                  className="bg-primary text-primary-foreground rounded-2xl p-4 flex flex-col items-center gap-2 active:scale-95 transition-transform shadow-sm"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25 + i * 0.05 }}
+                  className="bg-card rounded-xl p-2.5 flex flex-col items-center gap-1.5 border border-border/50 active:scale-95 transition-all hover:border-primary/30 hover:shadow-sm"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.25 + i * 0.03 }}
                 >
-                  <link.icon className="w-6 h-6 text-white" />
-                  <span className="text-xs font-semibold font-body text-white">
+                  <div className="w-9 h-9 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                    <link.icon className="w-4.5 h-4.5 text-primary" />
+                  </div>
+                  <span className="text-[10px] font-semibold font-body text-foreground/80 text-center leading-tight">
                     {link.label}
                   </span>
                 </motion.div>
@@ -324,9 +344,11 @@ export default function Dashboard() {
           </div>
         );
 
+      /* ── Spending Insights ──────────────────────────────────────── */
       case "insights":
         return <SpendingInsights />;
 
+      /* ── Recent Transactions ────────────────────────────────────── */
       case "recent":
         return (
           <motion.div
@@ -409,6 +431,7 @@ export default function Dashboard() {
           </motion.div>
         );
 
+      /* ── Quick Templates ────────────────────────────────────────── */
       case "quick-templates":
         if (templates.length === 0) return null;
         return (
@@ -424,7 +447,8 @@ export default function Dashboard() {
               </h2>
               <Link href="/app/settings">
                 <span className="text-xs text-primary font-semibold flex items-center gap-0.5">
-                  {lang === "fil" ? "I-manage" : "Manage"} <ChevronRight className="w-3 h-3" />
+                  {lang === "fil" ? "I-manage" : "Manage"}{" "}
+                  <ChevronRight className="w-3 h-3" />
                 </span>
               </Link>
             </div>
@@ -463,6 +487,7 @@ export default function Dashboard() {
           </motion.div>
         );
 
+      /* ── Stats Summary ──────────────────────────────────────────── */
       case "stats":
         if (activeGoals === 0 && activeDebts === 0) return null;
         return (
@@ -472,21 +497,31 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <div className="bg-card rounded-2xl p-4 border border-border/50">
-              <p className="text-xs text-muted-foreground font-body">
-                {lang === "fil" ? "Active Goals" : "Active Goals"}
-              </p>
-              <p className="text-2xl font-extrabold font-display mt-1">
-                {activeGoals}
-              </p>
+            <div className="bg-card rounded-2xl p-4 border border-border/50 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <PiggyBank className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-[10px] text-muted-foreground font-body uppercase tracking-wide">
+                  {lang === "fil" ? "Goals" : "Goals"}
+                </p>
+                <p className="text-xl font-extrabold font-display">
+                  {activeGoals}
+                </p>
+              </div>
             </div>
-            <div className="bg-card rounded-2xl p-4 border border-border/50">
-              <p className="text-xs text-muted-foreground font-body">
-                {lang === "fil" ? "Active na Utang" : "Active Debts"}
-              </p>
-              <p className="text-2xl font-extrabold font-display mt-1">
-                {activeDebts}
-              </p>
+            <div className="bg-card rounded-2xl p-4 border border-border/50 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <HandCoins className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-[10px] text-muted-foreground font-body uppercase tracking-wide">
+                  {lang === "fil" ? "Utang" : "Debts"}
+                </p>
+                <p className="text-xl font-extrabold font-display">
+                  {activeDebts}
+                </p>
+              </div>
             </div>
           </motion.div>
         );

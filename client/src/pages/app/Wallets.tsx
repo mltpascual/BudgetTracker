@@ -1,27 +1,17 @@
 /**
  * TIPID — Wallets Page
  * Manage multiple accounts (cash, bank, e-wallet).
+ * Uses Lucide SVG icons with colored tinted backgrounds.
  */
 import { useState } from "react";
 import { useTipidStore, formatCurrency, generateId, type Account, type AccountType } from "@/lib/store";
 import { motion } from "framer-motion";
-import { Plus, Pencil, Trash2, X, Check, Wallet, ArrowRightLeft } from "lucide-react";
+import {
+  Plus, Pencil, Trash2, X, Check, Wallet, ArrowRightLeft,
+} from "lucide-react";
 import { Link } from "wouter";
 import { toast } from "sonner";
-
-const ACCOUNT_ICONS: Record<AccountType, string> = {
-  cash: "💵",
-  bank: "🏦",
-  ewallet: "📱",
-  credit: "💳",
-};
-
-const ACCOUNT_COLORS: Record<AccountType, string> = {
-  cash: "#22c55e",
-  bank: "#0ea5e9",
-  ewallet: "#8b5cf6",
-  credit: "#f97316",
-};
+import AccountTypeIcon, { ACCOUNT_TYPE_CONFIG } from "@/components/AccountTypeIcon";
 
 export default function Wallets() {
   const { accounts, settings, addAccount, updateAccount, deleteAccount, transactions } = useTipidStore();
@@ -48,13 +38,14 @@ export default function Wallets() {
       toast.error("Please enter an account name");
       return;
     }
+    const config = ACCOUNT_TYPE_CONFIG[form.type];
     if (editId) {
       updateAccount(editId, {
         name: form.name,
         type: form.type,
         balance: parseFloat(form.balance) || 0,
-        icon: ACCOUNT_ICONS[form.type],
-        color: ACCOUNT_COLORS[form.type],
+        icon: form.type,
+        color: config.color,
       });
       toast.success("Account updated!");
     } else {
@@ -63,8 +54,8 @@ export default function Wallets() {
         type: form.type,
         balance: parseFloat(form.balance) || 0,
         currency: settings.currency,
-        icon: ACCOUNT_ICONS[form.type],
-        color: ACCOUNT_COLORS[form.type],
+        icon: form.type,
+        color: config.color,
       });
       toast.success("Account added!");
     }
@@ -125,15 +116,10 @@ export default function Wallets() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
           >
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center text-xl"
-              style={{ backgroundColor: acc.color + "20" }}
-            >
-              {acc.icon}
-            </div>
+            <AccountTypeIcon type={acc.type} size="lg" />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold font-body">{acc.name}</p>
-              <p className="text-xs text-muted-foreground capitalize">{acc.type === 'ewallet' ? 'E-Wallet' : acc.type === 'credit' ? 'Credit Card' : acc.type}</p>
+              <p className="text-xs text-muted-foreground">{ACCOUNT_TYPE_CONFIG[acc.type]?.label || acc.type}</p>
             </div>
             <div className="text-right">
               <p className="text-sm font-bold tabular-nums font-body">
@@ -197,20 +183,23 @@ export default function Wallets() {
               <div>
                 <label className="text-sm font-semibold font-body mb-1 block">Type</label>
                 <div className="grid grid-cols-4 gap-2">
-                  {(["cash", "bank", "ewallet", "credit"] as AccountType[]).map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => setForm({ ...form, type: t })}
-                      className={`flex flex-col items-center gap-1 p-3 rounded-xl transition-all ${
-                        form.type === t
-                          ? "bg-primary/15 border-2 border-primary"
-                          : "bg-background border border-border"
-                      }`}
-                    >
-                      <span className="text-xl">{ACCOUNT_ICONS[t]}</span>
-                      <span className="text-[10px] capitalize font-body">{t === "ewallet" ? "E-Wallet" : t}</span>
-                    </button>
-                  ))}
+                  {(["cash", "bank", "ewallet", "credit"] as AccountType[]).map((t) => {
+                    const config = ACCOUNT_TYPE_CONFIG[t];
+                    return (
+                      <button
+                        key={t}
+                        onClick={() => setForm({ ...form, type: t })}
+                        className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all ${
+                          form.type === t
+                            ? "bg-primary/15 border-2 border-primary"
+                            : "bg-background border border-border"
+                        }`}
+                      >
+                        <AccountTypeIcon type={t} size="md" />
+                        <span className="text-[10px] font-semibold font-body">{config.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

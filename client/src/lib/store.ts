@@ -118,9 +118,9 @@ const DEFAULT_CATEGORIES: Category[] = [
 ];
 
 const DEFAULT_ACCOUNTS: Account[] = [
-  { id: "cash", name: "Cash", type: "cash", balance: 0, currency: "PHP", icon: "💵", color: "#22c55e" },
-  { id: "bank", name: "Bank Account", type: "bank", balance: 0, currency: "PHP", icon: "🏦", color: "#0ea5e9" },
-  { id: "gcash", name: "GCash", type: "ewallet", balance: 0, currency: "PHP", icon: "📱", color: "#0066ff" },
+  { id: "cash", name: "Cash", type: "cash", balance: 0, currency: "PHP", icon: "cash", color: "#22c55e" },
+  { id: "bank", name: "Bank Account", type: "bank", balance: 0, currency: "PHP", icon: "bank", color: "#0ea5e9" },
+  { id: "gcash", name: "GCash", type: "ewallet", balance: 0, currency: "PHP", icon: "ewallet", color: "#0066ff" },
 ];
 
 const DEFAULT_SETTINGS: UserSettings = {

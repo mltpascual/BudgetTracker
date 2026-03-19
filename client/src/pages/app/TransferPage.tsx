@@ -15,6 +15,7 @@ import {
   Send,
 } from "lucide-react";
 import { toast } from "sonner";
+import AccountTypeIcon from "@/components/AccountTypeIcon";
 
 export default function TransferPage() {
   const { accounts, transfers, settings, addTransfer, deleteTransfer } =
@@ -99,7 +100,7 @@ export default function TransferPage() {
                     : "border-border/50 bg-muted/50 text-foreground"
                 }`}
               >
-                <span>{acc.icon}</span>
+                <AccountTypeIcon type={acc.type} size="sm" />
                 <div className="text-left">
                   <p className="font-semibold">{acc.name}</p>
                   <p className="text-[10px] text-muted-foreground tabular-nums">
@@ -137,7 +138,7 @@ export default function TransferPage() {
                     : "border-border/50 bg-muted/50 text-foreground"
                 }`}
               >
-                <span>{acc.icon}</span>
+                <AccountTypeIcon type={acc.type} size="sm" />
                 <div className="text-left">
                   <p className="font-semibold">{acc.name}</p>
                   <p className="text-[10px] text-muted-foreground tabular-nums">
@@ -185,13 +186,13 @@ export default function TransferPage() {
             animate={{ opacity: 1, height: "auto" }}
           >
             <div className="flex items-center justify-center gap-2 text-xs font-body">
-              <span className="font-semibold">{fromAcc?.icon} {fromAcc?.name}</span>
+              <span className="font-semibold">{fromAcc?.name}</span>
               <ArrowDown className="w-3.5 h-3.5 text-primary rotate-[-90deg]" />
               <span className="font-bold text-primary">
                 {formatCurrency(parseFloat(amount), currency)}
               </span>
               <ArrowDown className="w-3.5 h-3.5 text-primary rotate-[-90deg]" />
-              <span className="font-semibold">{toAcc?.icon} {toAcc?.name}</span>
+              <span className="font-semibold">{toAcc?.name}</span>
             </div>
           </motion.div>
         )}
@@ -238,8 +239,7 @@ export default function TransferPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold font-body">
-                        {from?.icon} {from?.name || "?"} → {to?.icon}{" "}
-                        {to?.name || "?"}
+                        {from?.name || "?"} → {to?.name || "?"}
                       </p>
                       <p className="text-[10px] text-muted-foreground">
                         {new Date(tr.date).toLocaleDateString("en-PH", {

@@ -2,26 +2,29 @@
  * TIPID — App Layout
  * Mobile-first shell with bottom navigation bar (Tarsi-style).
  * On desktop, constrains to phone-width centered layout.
+ * Supports i18n for nav labels.
  */
 import { ReactNode } from "react";
 import { useLocation, Link } from "wouter";
 import { Home, Plus, Wallet, CalendarDays, Settings } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/lib/i18n";
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
-const NAV_ITEMS = [
-  { path: "/app", icon: Home, label: "Home" },
-  { path: "/app/wallets", icon: Wallet, label: "Wallets" },
-  { path: "/app/add", icon: Plus, label: "Add", isCenter: true },
-  { path: "/app/history", icon: CalendarDays, label: "History" },
-  { path: "/app/settings", icon: Settings, label: "Settings" },
-];
-
 export default function AppLayout({ children }: AppLayoutProps) {
   const [location] = useLocation();
+  const { t } = useLanguage();
+
+  const NAV_ITEMS = [
+    { path: "/app", icon: Home, label: t("navHome") },
+    { path: "/app/wallets", icon: Wallet, label: t("navWallets") },
+    { path: "/app/add", icon: Plus, label: "Add", isCenter: true },
+    { path: "/app/history", icon: CalendarDays, label: t("navHistory") },
+    { path: "/app/settings", icon: Settings, label: t("navSettings") },
+  ];
 
   return (
     <div className="min-h-screen bg-background flex justify-center">

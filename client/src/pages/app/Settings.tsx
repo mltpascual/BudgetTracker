@@ -27,8 +27,20 @@ import {
   Check,
   Pencil,
   BookOpen,
+  Bell,
+  BellOff,
 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  getReminderSettings,
+  saveReminderSettings,
+  requestNotificationPermission,
+  isNotificationSupported,
+  getNotificationPermission,
+  type ReminderSettings,
+} from "@/hooks/useNotifications";
+import { useLanguage, LANGUAGE_LABELS, type Language } from "@/lib/i18n";
+import { Languages } from "lucide-react";
 
 const MASCOT_THINKING = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-thinking-ERdmSJBcizk7YthAnj68Pg.webp";
 
@@ -174,14 +186,41 @@ export default function Settings() {
     toast.success("Onboarding will show on next visit to Dashboard");
   };
 
+  // ── Notification State ──
+  const [reminders, setReminders] = useState<ReminderSettings>(getReminderSettings);
+  const [notifPerm, setNotifPerm] = useState<NotificationPermission | "unsupported">(
+    isNotificationSupported() ? Notification.permission : "unsupported"
+  );
+
+  const updateReminders = (patch: Partial<ReminderSettings>) => {
+    const updated = { ...reminders, ...patch };
+    setReminders(updated);
+    saveReminderSettings(updated);
+  };
+
+  const handleEnableNotifications = async () => {
+    const granted = await requestNotificationPermission();
+    setNotifPerm(granted ? "granted" : "denied");
+    if (granted) {
+      updateReminders({ enabled: true });
+      toast.success("Notifications enabled!");
+    } else {
+      toast.error("Notification permission denied. Enable it in browser settings.");
+    }
+  };
+
+  const DAYS_OF_WEEK = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  const { lang, changeLang, t } = useLanguage();
+
   const currencies = Object.keys(CURRENCY_SYMBOLS);
 
   return (
     <div className="px-5 pt-6 pb-4">
-      <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="text-2xl font-extrabold font-display">Settings</h1>
-          <p className="text-sm text-muted-foreground font-body">Customize Your App</p>
+          <h1 className="text-2xl font-extrabold font-display">{t("settingsTitle")}</h1>
+          <p className="text-sm text-muted-foreground font-body">{t("settingsCustomize")}</p>
         </div>
         <img src={MASCOT_THINKING} alt="Settings" className="w-12 h-12 object-contain" />
       </div>
@@ -213,6 +252,37 @@ export default function Settings() {
           </div>
         </motion.div>
 
+        {/* Language Section */}
+        <motion.div
+          className="bg-card rounded-2xl p-4 border border-border/50"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.03 }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Languages className="w-4 h-4 text-primary" />
+            <h2 className="text-sm font-bold font-display">{t("settingsLanguage")}</h2>
+          </div>
+          <div className="flex gap-2">
+            {(["en", "fil"] as Language[]).map((l) => (
+              <button
+                key={l}
+                onClick={() => {
+                  changeLang(l);
+                  toast.success(l === "fil" ? "Wika: Filipino" : "Language: English");
+                }}
+                className={`flex-1 py-2.5 rounded-xl text-sm font-body font-semibold transition-all active:scale-95 ${
+                  lang === l
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-background border border-border"
+                }`}
+              >
+                {l === "en" ? "🇺🇸 English" : "🇵🇭 Filipino"}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
         {/* Currency Section */}
         <motion.div
           className="bg-card rounded-2xl p-4 border border-border/50"
@@ -222,7 +292,7 @@ export default function Settings() {
         >
           <div className="flex items-center gap-2 mb-3">
             <DollarSign className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-bold font-display">Currency</h2>
+            <h2 className="text-sm font-bold font-display">{t("settingsCurrency")}</h2>
           </div>
           <div className="flex flex-wrap gap-2">
             {currencies.map((c) => (
@@ -253,13 +323,13 @@ export default function Settings() {
         >
           <div className="flex items-center gap-2 mb-3">
             <Palette className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-bold font-display">Theme</h2>
+            <h2 className="text-sm font-bold font-display">{t("settingsTheme")}</h2>
           </div>
           <div className="grid grid-cols-3 gap-2">
             {([
-              { value: "light", icon: Sun, label: "Light" },
-              { value: "dark", icon: Moon, label: "Dark" },
-              { value: "system", icon: Monitor, label: "System" },
+              { value: "light", icon: Sun, label: t("settingsLight") },
+              { value: "dark", icon: Moon, label: t("settingsDark") },
+              { value: "system", icon: Monitor, label: t("settingsSystem") },
             ] as const).map((t) => (
               <button
                 key={t.value}
@@ -280,6 +350,136 @@ export default function Settings() {
           </div>
         </motion.div>
 
+        {/* ─── Notifications & Reminders ─── */}
+        <motion.div
+          className="bg-card rounded-2xl p-4 border border-border/50"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.11 }}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Bell className="w-4 h-4 text-primary" />
+              <h2 className="text-sm font-bold font-display">{t("settingsReminders")}</h2>
+            </div>
+            {reminders.enabled ? (
+              <button
+                onClick={() => {
+                  updateReminders({ enabled: false });
+                  toast.success("Reminders disabled");
+                }}
+                className="text-[10px] px-2 py-1 rounded-lg bg-destructive/10 text-destructive font-semibold"
+              >
+                {t("settingsDisable")}
+              </button>
+            ) : null}
+          </div>
+
+          {notifPerm === "unsupported" ? (
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-muted/50">
+              <BellOff className="w-4 h-4 text-muted-foreground" />
+              <p className="text-xs text-muted-foreground font-body">
+                {t("settingsNotifUnsupported")}
+              </p>
+            </div>
+          ) : !reminders.enabled ? (
+            <button
+              onClick={handleEnableNotifications}
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-primary/10 border border-primary/20 hover:bg-primary/15 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <Bell className="w-4 h-4 text-primary" />
+                <div className="text-left">
+                  <span className="text-sm font-body font-semibold block">{t("settingsEnableReminders")}</span>
+                  <span className="text-[10px] text-muted-foreground">{t("settingsReminderDesc")}</span>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-primary" />
+            </button>
+          ) : (
+            <div className="space-y-3">
+              {/* Daily Reminder */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-background border border-border/50">
+                <div>
+                  <p className="text-sm font-body font-semibold">{t("settingsDailyReminder")}</p>
+                  <p className="text-[10px] text-muted-foreground">{t("settingsDailyDesc")}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="time"
+                    value={reminders.dailyTime}
+                    onChange={(e) => updateReminders({ dailyTime: e.target.value })}
+                    className="text-xs bg-muted rounded-lg px-2 py-1 font-body border-none outline-none"
+                  />
+                  <button
+                    onClick={() => updateReminders({ dailyReminder: !reminders.dailyReminder })}
+                    className={`w-10 h-6 rounded-full transition-colors relative ${
+                      reminders.dailyReminder ? "bg-primary" : "bg-muted"
+                    }`}
+                  >
+                    <div
+                      className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                        reminders.dailyReminder ? "translate-x-4" : "translate-x-0.5"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/* Weekly Reminder */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-background border border-border/50">
+                <div>
+                  <p className="text-sm font-body font-semibold">{t("settingsWeeklyReview")}</p>
+                  <p className="text-[10px] text-muted-foreground">{t("settingsWeeklyDesc")}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={reminders.weeklyDay}
+                    onChange={(e) => updateReminders({ weeklyDay: parseInt(e.target.value) })}
+                    className="text-xs bg-muted rounded-lg px-2 py-1 font-body border-none outline-none"
+                  >
+                    {DAYS_OF_WEEK.map((d, i) => (
+                      <option key={i} value={i}>{d.slice(0, 3)}</option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => updateReminders({ weeklyReminder: !reminders.weeklyReminder })}
+                    className={`w-10 h-6 rounded-full transition-colors relative ${
+                      reminders.weeklyReminder ? "bg-primary" : "bg-muted"
+                    }`}
+                  >
+                    <div
+                      className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                        reminders.weeklyReminder ? "translate-x-4" : "translate-x-0.5"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/* Budget Alerts */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-background border border-border/50">
+                <div>
+                  <p className="text-sm font-body font-semibold">{t("settingsBudgetAlerts")}</p>
+                  <p className="text-[10px] text-muted-foreground">{t("settingsBudgetAlertsDesc")}</p>
+                </div>
+                <button
+                  onClick={() => updateReminders({ budgetAlerts: !reminders.budgetAlerts })}
+                  className={`w-10 h-6 rounded-full transition-colors relative ${
+                    reminders.budgetAlerts ? "bg-primary" : "bg-muted"
+                  }`}
+                >
+                  <div
+                    className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${
+                      reminders.budgetAlerts ? "translate-x-4" : "translate-x-0.5"
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+          )}
+        </motion.div>
+
         {/* ─── Category Management ─── */}
         <motion.div
           className="bg-card rounded-2xl p-4 border border-border/50"
@@ -290,7 +490,7 @@ export default function Settings() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Tag className="w-4 h-4 text-primary" />
-              <h2 className="text-sm font-bold font-display">Categories</h2>
+              <h2 className="text-sm font-bold font-display">{t("settingsCategories")}</h2>
             </div>
             <button
               onClick={openAddCategory}
@@ -358,7 +558,7 @@ export default function Settings() {
         >
           <div className="flex items-center gap-2 mb-3">
             <Download className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-bold font-display">Export & Backup</h2>
+            <h2 className="text-sm font-bold font-display">{t("settingsExport")}</h2>
           </div>
           <div className="space-y-2">
             <button
@@ -368,8 +568,8 @@ export default function Settings() {
               <div className="flex items-center gap-3">
                 <FileJson className="w-4 h-4 text-primary" />
                 <div className="text-left">
-                  <span className="text-sm font-body block">Export JSON Backup</span>
-                  <span className="text-[10px] text-muted-foreground">Full data backup for restore</span>
+                  <span className="text-sm font-body block">{t("settingsExportJSON")}</span>
+                  <span className="text-[10px] text-muted-foreground">{t("settingsExportJSONDesc")}</span>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
@@ -381,8 +581,8 @@ export default function Settings() {
               <div className="flex items-center gap-3">
                 <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
                 <div className="text-left">
-                  <span className="text-sm font-body block">Export Transactions CSV</span>
-                  <span className="text-[10px] text-muted-foreground">Open in Excel or Google Sheets</span>
+                  <span className="text-sm font-body block">{t("settingsExportCSV")}</span>
+                  <span className="text-[10px] text-muted-foreground">{t("settingsExportCSVDesc")}</span>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
@@ -394,8 +594,8 @@ export default function Settings() {
               <div className="flex items-center gap-3">
                 <Upload className="w-4 h-4 text-primary" />
                 <div className="text-left">
-                  <span className="text-sm font-body block">Import JSON Backup</span>
-                  <span className="text-[10px] text-muted-foreground">Restore from a backup file</span>
+                  <span className="text-sm font-body block">{t("settingsImportJSON")}</span>
+                  <span className="text-[10px] text-muted-foreground">{t("settingsImportJSONDesc")}</span>
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
@@ -419,7 +619,7 @@ export default function Settings() {
         >
           <div className="flex items-center gap-2 mb-3">
             <BookOpen className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-bold font-display">Tutorial</h2>
+            <h2 className="text-sm font-bold font-display">{t("settingsTutorial")}</h2>
           </div>
           <button
             onClick={handleRestartOnboarding}
@@ -427,7 +627,7 @@ export default function Settings() {
           >
             <div className="flex items-center gap-3">
               <BookOpen className="w-4 h-4 text-primary" />
-              <span className="text-sm font-body">Restart Onboarding</span>
+              <span className="text-sm font-body">{t("settingsRestartOnboarding")}</span>
             </div>
             <ChevronRight className="w-4 h-4 text-muted-foreground" />
           </button>
@@ -442,32 +642,32 @@ export default function Settings() {
         >
           <div className="flex items-center gap-2 mb-3">
             <Trash2 className="w-4 h-4 text-destructive" />
-            <h2 className="text-sm font-bold font-display text-destructive">Danger Zone</h2>
+            <h2 className="text-sm font-bold font-display text-destructive">{t("settingsDangerZone")}</h2>
           </div>
           {!showReset ? (
             <button
               onClick={() => setShowReset(true)}
               className="w-full p-3 rounded-xl bg-destructive/10 text-destructive text-sm font-semibold font-body active:scale-[0.98] transition-transform"
             >
-              Reset All Data
+              {t("settingsResetAll")}
             </button>
           ) : (
             <div className="space-y-2">
               <p className="text-sm text-destructive font-body">
-                Are you sure? This will delete ALL your data permanently.
+                {t("settingsResetConfirm")}
               </p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setShowReset(false)}
                   className="flex-1 p-3 rounded-xl bg-background border border-border text-sm font-body"
                 >
-                  Cancel
+                  {t("cancel")}
                 </button>
                 <button
                   onClick={handleReset}
                   className="flex-1 p-3 rounded-xl bg-destructive text-destructive-foreground text-sm font-bold font-body active:scale-[0.98] transition-transform"
                 >
-                  Yes, Reset
+                  {t("settingsYesReset")}
                 </button>
               </div>
             </div>
@@ -482,10 +682,10 @@ export default function Settings() {
           transition={{ delay: 0.25 }}
         >
           <p className="text-xs text-muted-foreground font-body">
-            Tipid v1.2.0 — Budgeting Without The Stress
+            {t("settingsAppVersion")}
           </p>
           <p className="text-[10px] text-muted-foreground/60 font-body mt-1">
-            All data stored locally on your device.
+            {t("settingsLocalData")}
           </p>
         </motion.div>
       </div>
@@ -509,7 +709,7 @@ export default function Settings() {
             >
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-lg font-extrabold font-display">
-                  {editCat ? "Edit Category" : "New Category"}
+                  {editCat ? t("settingsEditCategory") : t("settingsNewCategory")}
                 </h2>
                 <button onClick={() => setShowCatForm(false)}>
                   <X className="w-5 h-5 text-muted-foreground" />
@@ -530,7 +730,7 @@ export default function Settings() {
                         : "bg-muted text-muted-foreground"
                     }`}
                   >
-                    {t === "expense" ? "Expense" : "Income"}
+                    {t === "expense" ? lang === "fil" ? "Gastos" : "Expense" : lang === "fil" ? "Kita" : "Income"}
                   </button>
                 ))}
               </div>
@@ -538,12 +738,12 @@ export default function Settings() {
               {/* Name */}
               <div className="mb-4">
                 <label className="text-xs font-semibold font-body text-muted-foreground mb-1.5 block">
-                  Category Name
+                  {t("settingsCategoryName")}
                 </label>
                 <input
                   value={catForm.name}
                   onChange={(e) => setCatForm({ ...catForm, name: e.target.value })}
-                  placeholder="e.g. Pets, Coffee, Gym"
+                  placeholder={t("settingsCategoryNamePlaceholder")}
                   className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm font-body"
                 />
               </div>
@@ -551,7 +751,7 @@ export default function Settings() {
               {/* Icon Picker */}
               <div className="mb-4">
                 <label className="text-xs font-semibold font-body text-muted-foreground mb-1.5 block">
-                  Icon
+                  {t("settingsIcon")}
                 </label>
                 <div className="grid grid-cols-5 gap-2">
                   {AVAILABLE_ICONS.map((item) => {
@@ -579,7 +779,7 @@ export default function Settings() {
               {/* Color Picker */}
               <div className="mb-5">
                 <label className="text-xs font-semibold font-body text-muted-foreground mb-1.5 block">
-                  Color
+                  {t("settingsColor")}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {CATEGORY_COLORS.map((color) => (
@@ -601,7 +801,7 @@ export default function Settings() {
               <div className="mb-5 p-3 bg-muted/50 rounded-xl flex items-center gap-3">
                 <CategoryIcon categoryId="__preview" iconName={catForm.icon} color={catForm.color} size="lg" />
                 <div>
-                  <p className="text-sm font-semibold font-body">{catForm.name || "Preview"}</p>
+                  <p className="text-sm font-semibold font-body">{catForm.name || t("settingsPreview")}</p>
                   <p className="text-[10px] text-muted-foreground capitalize">{catForm.type}</p>
                 </div>
               </div>
@@ -624,7 +824,7 @@ export default function Settings() {
                   className="flex-1 py-3.5 rounded-xl bg-primary text-primary-foreground font-bold font-display text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                 >
                   <Check className="w-5 h-5" />
-                  {editCat ? "Update Category" : "Add Category"}
+                  {editCat ? t("settingsUpdateCategory") : t("settingsAddCategory")}
                 </button>
               </div>
             </motion.div>

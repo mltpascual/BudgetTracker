@@ -8,6 +8,7 @@ import { useTipidStore, formatCurrency, type RecurringEntry } from "@/lib/store"
 import CategoryIcon from "@/components/CategoryIcon";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
+import AccountTypeIcon from "@/components/AccountTypeIcon";
 import {
   ArrowLeft,
   Plus,
@@ -297,7 +298,7 @@ export default function Recurring() {
                         : "border-transparent bg-muted/50"
                     }`}
                   >
-                    <span>{acc.icon}</span>
+                    <AccountTypeIcon type={acc.type} size="sm" />
                     {acc.name}
                   </button>
                 ))}

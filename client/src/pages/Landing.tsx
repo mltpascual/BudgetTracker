@@ -1,6 +1,7 @@
 /**
  * TIPID — Landing Page
  * Marketing page with hero, features, and CTA. Tarsi-inspired layout.
+ * Supports English/Filipino via i18n.
  */
 import { Link } from "wouter";
 import { motion } from "framer-motion";
@@ -15,49 +16,11 @@ import {
   Smartphone,
   ArrowRight,
 } from "lucide-react";
+import { useLanguage } from "@/lib/i18n";
 
 const MASCOT_HERO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-hero-bp3JZP7pTnsQwyUv8GpRTC.webp";
 const MASCOT_HAPPY = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-happy-MhYqoPSPsRvFcB3CkzXrzP.webp";
 const MASCOT_COIN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-coin-bBXSjJ8mXoXLhUFaH3AN8S.webp";
-
-const FEATURES = [
-  {
-    icon: Wallet,
-    title: "Multiple Wallets",
-    desc: "Track cash, bank accounts, and e-wallets all in one place.",
-    color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
-  },
-  {
-    icon: CalendarDays,
-    title: "Calendar History",
-    desc: "See your spending patterns with a beautiful monthly calendar view.",
-    color: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
-  },
-  {
-    icon: Target,
-    title: "Monthly Budgets",
-    desc: "Set spending limits per category and stay on track.",
-    color: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
-  },
-  {
-    icon: TrendingUp,
-    title: "Savings Goals",
-    desc: "Set targets and watch your progress grow over time.",
-    color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  },
-  {
-    icon: HandCoins,
-    title: "Debt Tracker",
-    desc: "Keep track of what you owe and what others owe you.",
-    color: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400",
-  },
-  {
-    icon: Download,
-    title: "JSON Backup",
-    desc: "Export and import your data anytime. Your data, your control.",
-    color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
-  },
-];
 
 const fadeUp = {
   initial: { opacity: 0, y: 30 },
@@ -66,6 +29,47 @@ const fadeUp = {
 };
 
 export default function Landing() {
+  const { t, lang } = useLanguage();
+
+  const FEATURES = [
+    {
+      icon: Wallet,
+      title: lang === "fil" ? "Multiple Wallets" : "Multiple Wallets",
+      desc: lang === "fil" ? "I-track ang cash, bank accounts, at e-wallets mo sa isang lugar." : "Track cash, bank accounts, and e-wallets all in one place.",
+      color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+    },
+    {
+      icon: CalendarDays,
+      title: lang === "fil" ? "Calendar History" : "Calendar History",
+      desc: lang === "fil" ? "Tingnan ang spending patterns mo gamit ang monthly calendar view." : "See your spending patterns with a beautiful monthly calendar view.",
+      color: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
+    },
+    {
+      icon: Target,
+      title: lang === "fil" ? "Monthly Budgets" : "Monthly Budgets",
+      desc: lang === "fil" ? "Mag-set ng spending limits per category at manatiling on track." : "Set spending limits per category and stay on track.",
+      color: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+    },
+    {
+      icon: TrendingUp,
+      title: lang === "fil" ? "Savings Goals" : "Savings Goals",
+      desc: lang === "fil" ? "Mag-set ng targets at panoorin ang progress mo." : "Set targets and watch your progress grow over time.",
+      color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+    },
+    {
+      icon: HandCoins,
+      title: lang === "fil" ? "Debt Tracker" : "Debt Tracker",
+      desc: lang === "fil" ? "I-track ang utang mo at pinahiram mo." : "Keep track of what you owe and what others owe you.",
+      color: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400",
+    },
+    {
+      icon: Download,
+      title: lang === "fil" ? "JSON Backup" : "JSON Backup",
+      desc: lang === "fil" ? "I-export at i-import ang data mo anytime. Data mo, control mo." : "Export and import your data anytime. Your data, your control.",
+      color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Nav */}
@@ -77,7 +81,7 @@ export default function Landing() {
           </div>
           <Link href="/app">
             <span className="px-5 py-2 rounded-full bg-primary text-primary-foreground text-sm font-bold font-display active:scale-95 transition-transform">
-              Open App
+              {t("landingOpenApp")}
             </span>
           </Link>
         </div>
@@ -114,9 +118,11 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            Budgeting Without
-            <br />
-            <span className="text-primary">The Stress</span>
+            {lang === "fil" ? (
+              <>Budgeting Nang Walang<br /><span className="text-primary">Stress</span></>
+            ) : (
+              <>Budgeting Without<br /><span className="text-primary">The Stress</span></>
+            )}
           </motion.h1>
 
           <motion.p
@@ -125,7 +131,7 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            Meet your friendly kalabaw budget buddy. Track expenses, set goals, and take control of your finances — all offline, all private.
+            {t("landingHeroDesc")}
           </motion.p>
 
           <motion.div
@@ -136,7 +142,7 @@ export default function Landing() {
           >
             <Link href="/app">
               <span className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground text-base font-bold font-display shadow-lg shadow-primary/30 active:scale-95 transition-transform">
-                Get Started <ArrowRight className="w-5 h-5" />
+                {lang === "fil" ? "Mag-Start Na" : "Get Started"} <ArrowRight className="w-5 h-5" />
               </span>
             </Link>
           </motion.div>
@@ -154,9 +160,13 @@ export default function Landing() {
             <Shield className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <p className="text-sm font-bold font-display text-foreground">100% Private & Offline</p>
+            <p className="text-sm font-bold font-display text-foreground">
+              {lang === "fil" ? "100% Private & Offline" : "100% Private & Offline"}
+            </p>
             <p className="text-xs text-muted-foreground font-body">
-              No servers, no accounts, no tracking. Your financial data stays on your device and never leaves.
+              {lang === "fil"
+                ? "Walang servers, walang accounts, walang tracking. Naka-save ang data mo sa device mo lang."
+                : "No servers, no accounts, no tracking. Your financial data stays on your device and never leaves."}
             </p>
           </div>
         </motion.div>
@@ -166,10 +176,10 @@ export default function Landing() {
       <section className="max-w-5xl mx-auto px-5 pb-16">
         <motion.div className="text-center mb-10" {...fadeUp}>
           <h2 className="text-2xl md:text-3xl font-extrabold font-display text-foreground mb-2">
-            Everything You Need
+            {t("landingFeaturesDesc")}
           </h2>
           <p className="text-sm text-muted-foreground font-body">
-            Simple yet powerful tools to manage your money.
+            {lang === "fil" ? "Simple pero powerful na tools para i-manage ang pera mo." : "Simple yet powerful tools to manage your money."}
           </p>
         </motion.div>
 
@@ -199,14 +209,16 @@ export default function Landing() {
         >
           <Smartphone className="w-10 h-10 mx-auto mb-4 opacity-80" />
           <h2 className="text-xl md:text-2xl font-extrabold font-display mb-2">
-            Install As An App
+            {lang === "fil" ? "I-Install Bilang App" : "Install As An App"}
           </h2>
           <p className="text-sm opacity-80 font-body max-w-md mx-auto mb-5">
-            Add Tipid to your home screen for a native app experience. Works offline, no app store needed!
+            {lang === "fil"
+              ? "I-add ang Tipid sa home screen mo para sa native app experience. Gumagana offline, walang app store needed!"
+              : "Add Tipid to your home screen for a native app experience. Works offline, no app store needed!"}
           </p>
           <Link href="/app">
             <span className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-primary text-sm font-bold font-display active:scale-95 transition-transform">
-              Try Tipid Now <ArrowRight className="w-4 h-4" />
+              {t("landingCTA")} <ArrowRight className="w-4 h-4" />
             </span>
           </Link>
         </motion.div>
@@ -220,7 +232,7 @@ export default function Landing() {
             <span className="text-sm font-bold font-display text-foreground">Tipid</span>
           </div>
           <p className="text-xs text-muted-foreground font-body">
-            Made with care. All data stored locally on your device.
+            {t("landingFooter")}
           </p>
         </div>
       </footer>

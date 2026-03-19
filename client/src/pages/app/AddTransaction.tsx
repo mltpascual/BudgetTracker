@@ -9,6 +9,7 @@ import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowLeft, Check, Delete } from "lucide-react";
 import { toast } from "sonner";
+import AccountTypeIcon from "@/components/AccountTypeIcon";
 
 export default function AddTransaction() {
   const { categories, accounts, settings, addTransaction } = useTipidStore();
@@ -198,7 +199,7 @@ export default function AddTransaction() {
                       : "bg-card border border-border/50"
                   }`}
                 >
-                  <span>{acc.icon}</span>
+                  <AccountTypeIcon type={acc.type} size="sm" />
                   <span className="text-sm font-body font-medium">{acc.name}</span>
                 </button>
               ))}

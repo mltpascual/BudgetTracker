@@ -1,6 +1,7 @@
 /**
  * TIPID — Dashboard
  * Home screen with greeting, mascot tip, quick stats, budget overview, and quick links.
+ * Supports English/Filipino via i18n.
  */
 import { useTipidStore, formatCurrency } from "@/lib/store";
 import CategoryIcon from "@/components/CategoryIcon";
@@ -20,11 +21,12 @@ import {
 import { useState, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
 import Onboarding from "@/components/Onboarding";
+import { useLanguage } from "@/lib/i18n";
 
 const MASCOT_HAPPY = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-happy-MhYqoPSPsRvFcB3CkzXrzP.webp";
 const MASCOT_COIN = "https://d2xsxph8kpxj0f.cloudfront.net/310519663343684150/FNkkFLEF8kYQYkpqvCkWgV/mascot-coin-bBXSjJ8mXoXLhUFaH3AN8S.webp";
 
-const TIPS = [
+const TIPS_EN = [
   "Tip: Track every gastos, kahit barya lang!",
   "Tip: Set a monthly budget para hindi ma-overspend.",
   "Tip: Ipon muna bago gastos, pre!",
@@ -33,50 +35,61 @@ const TIPS = [
   "Tip: Avoid impulse buying — sleep on it first!",
 ];
 
-function getGreeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good Morning";
-  if (hour < 17) return "Good Afternoon";
-  return "Good Evening";
-}
+const TIPS_FIL = [
+  "Tip: I-track lahat ng gastos, kahit barya lang!",
+  "Tip: Mag-set ng monthly budget para hindi sobra!",
+  "Tip: Ipon muna bago gastos, pre!",
+  "Tip: I-review ang gastos mo every week.",
+  "Tip: Maliit na ipon, malaki rin kapag naipon!",
+  "Tip: Wag impulse buying — tulog muna bago bilhin!",
+];
 
 export default function Dashboard() {
   const { transactions, accounts, budgets, goals, debts, categories, settings } = useTipidStore();
   const [showOnboarding, setShowOnboarding] = useState(!settings.hasOnboarded);
+  const { lang, t } = useLanguage();
   const currency = settings.currency;
 
-  const tip = useMemo(() => TIPS[Math.floor(Math.random() * TIPS.length)], []);
+  const tips = lang === "fil" ? TIPS_FIL : TIPS_EN;
+  const tip = useMemo(() => tips[Math.floor(Math.random() * tips.length)], [lang]);
 
   // Current month stats
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  const monthTransactions = transactions.filter((t) => {
-    const d = new Date(t.date);
+  const monthTransactions = transactions.filter((tx) => {
+    const d = new Date(tx.date);
     return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
   });
 
   const totalIncome = monthTransactions
-    .filter((t) => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter((tx) => tx.type === "income")
+    .reduce((sum, tx) => sum + tx.amount, 0);
 
   const totalExpense = monthTransactions
-    .filter((t) => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
+    .filter((tx) => tx.type === "expense")
+    .reduce((sum, tx) => sum + tx.amount, 0);
 
   const totalBalance = accounts.reduce((sum, a) => sum + a.balance, 0);
 
   const activeGoals = goals.length;
   const activeDebts = debts.filter((d) => d.paidAmount < d.totalAmount).length;
 
+  function getGreeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) return t("dashGreeting");
+    if (hour < 17) return t("dashGreetingAfternoon");
+    return t("dashGreetingEvening");
+  }
+
   const quickLinks = [
-    { label: "Budgets", icon: Target, href: "/app/budgets", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" },
-    { label: "Goals", icon: TrendingUp, href: "/app/goals", color: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400" },
-    { label: "Debts", icon: HandCoins, href: "/app/debts", color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
-    { label: "Recurring", icon: Repeat, href: "/app/recurring", color: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400" },
-    { label: "Analytics", icon: BarChart3, href: "/app/analytics", color: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400" },
-    { label: "Transfer", icon: ArrowRightLeft, href: "/app/transfer", color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400" },
+    { label: t("dashBudgets"), icon: Target, href: "/app/budgets", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400" },
+    { label: t("dashGoals"), icon: TrendingUp, href: "/app/goals", color: "bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400" },
+    { label: t("dashDebts"), icon: HandCoins, href: "/app/debts", color: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
+    { label: t("dashRecurring"), icon: Repeat, href: "/app/recurring", color: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400" },
+    { label: t("dashAnalytics"), icon: BarChart3, href: "/app/analytics", color: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400" },
+    { label: t("dashTransfer"), icon: ArrowRightLeft, href: "/app/transfer", color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400" },
   ];
 
   return (
@@ -126,7 +139,7 @@ export default function Dashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <p className="text-sm opacity-80 font-body">Total Balance</p>
+        <p className="text-sm opacity-80 font-body">{t("dashBalance")}</p>
         <p className="text-3xl font-extrabold font-display tabular-nums mt-1">
           {formatCurrency(totalBalance, currency)}
         </p>
@@ -136,7 +149,7 @@ export default function Dashboard() {
               <ArrowDownRight className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[10px] opacity-70">Income</p>
+              <p className="text-[10px] opacity-70">{t("dashIncome")}</p>
               <p className="text-sm font-bold tabular-nums">{formatCurrency(totalIncome, currency)}</p>
             </div>
           </div>
@@ -145,7 +158,7 @@ export default function Dashboard() {
               <ArrowUpRight className="w-4 h-4" />
             </div>
             <div>
-              <p className="text-[10px] opacity-70">Expense</p>
+              <p className="text-[10px] opacity-70">{t("dashExpense")}</p>
               <p className="text-sm font-bold tabular-nums">{formatCurrency(totalExpense, currency)}</p>
             </div>
           </div>
@@ -176,10 +189,10 @@ export default function Dashboard() {
         transition={{ delay: 0.35 }}
       >
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-bold font-display">Recent Transactions</h2>
+          <h2 className="text-base font-bold font-display">{t("dashRecentTransactions")}</h2>
           <Link href="/app/history">
             <span className="text-xs text-primary font-semibold flex items-center gap-0.5">
-              See All <ChevronRight className="w-3 h-3" />
+              {t("dashViewAll")} <ChevronRight className="w-3 h-3" />
             </span>
           </Link>
         </div>
@@ -192,7 +205,7 @@ export default function Dashboard() {
               className="w-20 h-20 mx-auto mb-3 object-contain"
             />
             <p className="text-sm text-muted-foreground font-body">
-              No transactions yet. Tap the + button to add one!
+              {t("dashNoTransactions")}
             </p>
           </div>
         ) : (
@@ -245,11 +258,11 @@ export default function Dashboard() {
           transition={{ delay: 0.4 }}
         >
           <div className="bg-card rounded-2xl p-4 border border-border/50">
-            <p className="text-xs text-muted-foreground font-body">Active Goals</p>
+            <p className="text-xs text-muted-foreground font-body">{lang === "fil" ? "Active Goals" : "Active Goals"}</p>
             <p className="text-2xl font-extrabold font-display mt-1">{activeGoals}</p>
           </div>
           <div className="bg-card rounded-2xl p-4 border border-border/50">
-            <p className="text-xs text-muted-foreground font-body">Active Debts</p>
+            <p className="text-xs text-muted-foreground font-body">{lang === "fil" ? "Active na Utang" : "Active Debts"}</p>
             <p className="text-2xl font-extrabold font-display mt-1">{activeDebts}</p>
           </div>
         </motion.div>

@@ -141,8 +141,12 @@ export default function CategoryIcon({
 }: CategoryIconProps) {
   const config = getCategoryIconConfig(categoryId);
   const IconComponent = iconName ? (ICON_NAME_MAP[iconName] || config.icon) : config.icon;
+  const isDark = typeof document !== "undefined" && document.documentElement.classList.contains("dark");
   const iconColor = color || config.color;
-  const bgColor = color ? color + "15" : config.bg;
+  // In dark mode, use a semi-transparent version of the color for the background
+  const bgColor = isDark
+    ? (color ? color + "25" : config.color + "20")
+    : (color ? color + "15" : config.bg);
   const sizes = SIZE_MAP[size];
 
   return (

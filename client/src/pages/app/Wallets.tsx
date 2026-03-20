@@ -148,7 +148,7 @@ export default function Wallets() {
       {/* Add/Edit Form Modal */}
       {showForm && (
         <motion.div
-          className="fixed inset-0 bg-black/40 z-50 flex items-end justify-center"
+          className="fixed inset-0 bg-black/40 z-[60] flex items-end justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           onClick={() => setShowForm(false)}
@@ -217,7 +217,7 @@ export default function Wallets() {
             </div>
 
             {/* Sticky save button - always visible */}
-            <div className="p-6 pt-3 border-t border-border bg-card rounded-b-none">
+            <div className="p-6 pt-3 pb-8 border-t border-border bg-card rounded-b-none">
               <button
                 onClick={handleSave}
                 className="w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-bold font-display flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"

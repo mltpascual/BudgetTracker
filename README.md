@@ -9,6 +9,10 @@ Tipid ("thrifty" in Filipino) is a free, offline-first personal budget tracker P
 ## App Previews
 
 <div align="center">
+  <img src="./docs/tipid-poster-2048x1536.png" alt="Tipid App Feature Showcase" width="100%" />
+</div>
+
+<div align="center">
   <img src="./docs/mockups/preview-4phones.png" alt="Tipid App Previews" width="100%" />
 </div>
 

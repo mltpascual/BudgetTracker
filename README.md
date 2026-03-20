@@ -12,18 +12,6 @@ Tipid ("thrifty" in Filipino) is a free, offline-first personal budget tracker P
   <img src="./docs/tipid-poster-2048x1536.png" alt="Tipid App Feature Showcase" width="100%" />
 </div>
 
-<div align="center">
-  <img src="./docs/mockups/preview-4phones.png" alt="Tipid App Previews" width="100%" />
-</div>
-
-### Screenshots
-
-| Dashboard | Wallets | Analytics | History |
-| :---: | :---: | :---: | :---: |
-| <img src="./docs/screenshots/dashboard-overview.PNG" width="200" alt="Dashboard" /> | <img src="./docs/screenshots/wallets-overview.PNG" width="200" alt="Wallets" /> | <img src="./docs/screenshots/analytics-insights.PNG" width="200" alt="Analytics" /> | <img src="./docs/screenshots/history-calendar-view.PNG" width="200" alt="History" /> |
-| **Savings Goals** | **Settings** | **Onboarding** | **Empty State** |
-| <img src="./docs/screenshots/goals-savings-targets.PNG" width="200" alt="Savings Goals" /> | <img src="./docs/screenshots/settings-preferences.PNG" width="200" alt="Settings" /> | <img src="./docs/screenshots/onboarding-welcome-modal.PNG" width="200" alt="Onboarding" /> | <img src="./docs/screenshots/dashboard-empty-state.PNG" width="200" alt="Empty State" /> |
-
 ## Key Features
 
 | Feature | Description |
